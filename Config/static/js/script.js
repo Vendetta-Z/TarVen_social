@@ -271,3 +271,22 @@ function send_changed_data_to_back(post_id){
         }
     })
 }
+
+function deletePublication(postId){
+    parentTweetBlock = $('.tweets-section');
+    childTweetBlock = $('.post'+postId);
+    if (confirm ('Вы уверены?')){
+        $.ajax({
+            url:'delete_post',
+            method: 'POST',
+            data: {'postId':postId},
+            headers: { "X-CSRFToken": getCookie("csrftoken")},
+    
+            success: function(data){
+                childTweetBlock.remove();
+                $('.covepPopupChangeStory').css('display', 'none');
+            }
+        })
+    }
+    
+}

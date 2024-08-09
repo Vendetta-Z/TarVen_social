@@ -38,10 +38,11 @@
 
                 </div>
             </div>
+            <h2>Your story</h2>
+
             <div class="tweets-section">
-                <h2>Your story</h2>
                 {% for post in posts %}
-                    <div class="tweet" onclick="GetPostData({{post.pk}})">
+                    <div class="tweet post{{post.pk}}" onclick="GetPostData({{post.pk}})">
                         <p>{{post.description}}</p>
                         <img src="{{post.PostVidOrImg.url}}" alt="Tweet Image 1" class="tweet-image">
                         <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>

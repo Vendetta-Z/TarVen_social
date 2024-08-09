@@ -44,7 +44,7 @@ class Posts_views:
         return Posts_services.change_post_data(request_POST, request_FILES)
 
     def delete_post(self):
-        post_id = self.POST['post_id']
+        post_id = self.POST['postId']
         Posts_services.delete_post(self, post_id)
         return JsonResponse('post succesfull deleted!', safe=False)    
 

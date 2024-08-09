@@ -41,7 +41,7 @@ function send_data_for_create_new_post(){
             var post = JSON.parse(data)
             console.log(post)
             var div_block_with_new_post = `
-                    <div class="tweet">
+                    <div class="tweet post`+ post[0].pk +`" onclick="GetPostData(`+ post[0].pk + `)">
                         <p>`+ post[0].fields.description +`</p>
                         <img src=`+ post[0].fields.PostVidOrImg +` alt="Tweet Image 1" class="tweet-image">
                         <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>
@@ -70,7 +70,9 @@ function openPostEditPopup(postData){
                                     <p>Post description</p>
                                     <input class="DescriptionAreaInPopupEditPost" type="text" value="` + postData.fields.description +`"></input>
                                     <span class="tweet-date">`+ postData.fields.created +`</span> 
-                                    <button onclick ="send_changed_data_to_back(`+ postData.pk +`)" >Submit Changes</button>`)
+                                    <button onclick ="send_changed_data_to_back(`+ postData.pk +`)" >Submit Changes</button>
+                                    <button onclick ="deletePublication(`+ postData.pk +`)" >Delete Publication</button>
+                                    `)
 }
 
 

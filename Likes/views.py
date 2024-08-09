@@ -15,7 +15,7 @@ class LikeViews:
                 'message':'successful removed like',
                 'method': 'R',
                 'Likes_count':Like.objects.filter(product=post).count(),
-                'like_icon': "Config\static\icons\heart.png"})
+                'like_icon': "Config/static/icons/heart.png"})
         like = Like()
         like.author = self.user
         like.product = post
@@ -26,7 +26,7 @@ class LikeViews:
             'message':'successful liked',
             'method':'A',
             'Likes_count':Like.objects.filter(product=post).count(),
-            'like_icon': "Config\static\icons\\red_heart.png"})
+            'like_icon': "Config/static/icons/red_heart.png"})
 
 
     def remove_like(self, post):
