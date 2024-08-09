@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+    <html lang="ru">
+    <head>
+        <link rel="stylesheet" href="static/css/profile.css" type="text/css"/>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="static/js/script.js"></script>
+    </head>
+        
+    <header>
+        {% include 'header.html' %}
+
+        <div class="container">
+
+            <div class="profile">
+
+                <div class="profile-image">
+
+                    <img src="{{user.avatar}}" >
+
+                </div>
+
+                <div class="profile-user-settings">
+
+                    <h1 class="profile-user-name">{{user.username}}</h1>
+
+                    <button class="btn profile-settings-btn" aria-label="profile settings"><i class="fas fa-cog" aria-hidden="true"></i></button>
+
+                </div>
+
+                <div class="profile-stats">
+
+                    <ul>
+                        <li><span class="profile-stat-count">{{posts.count}}</span> Посты</li>
+                        <li><span class="profile-stat-count">{{subscribers}}</span> Подписчики</li>
+                        <li><span class="profile-stat-count">{{subscribes}}</span> Подписки</li>
+                    </ul>
+                </div>
+
+                <div class="profile-bio">
+
+                    <p><span class="profile-real-name">Это описание профиля , скоро будет добавлена логика 📷✈️🏕️</p>
+
+                </div>
+
+            </div>
+            <!-- End of profile section -->
+            
+        </div>
+        <!-- End of container -->
+
+    </header>
+    <main>
+
+        <div class="container">
+            <div class="gallery">           
+                {% for post in posts %}
+                    <div class="gallery-item post_id_{{post.id}}" tabindex="0" onclick="open_popup_for_post('{{post.id}}')">
+
+                        <img src="{{post.image}}" class="gallery-image" alt="">
+
+                        <div class="gallery-item-info">
+
+                            <ul>
+                                <li class="gallery-item-likes"><span class="visually-hidden">Likes:</span><i class="fas fa-heart" aria-hidden="true"></i></li>
+                                <li class="gallery-item-comments"><span class="visually-hidden">Comments:</span><i class="fas fa-comment" aria-hidden="true"></i> </li>
+                            </ul>
+
+                        </div>
+                        
+
+                    </div>
+                {% endfor %}
+            </div>
+            
+            <!-- End of gallery -->
+
+        </div>
+        <!-- End of container -->
+
+    </main>
+
+    <div class="popup_for_more_about_post">
+        <div class="grid_position_in_popup_for_more_div">
+    
+            <block class="author_and_subBtn_in_popup">
+                <a class="publiation_author_link"></a>
+                <a class="close_popup_btn" onclick="close_popup_post()"><img src="/static/image/closeIcon.png" /></a>
+            </block>
+            <!--  -->
+            <div class="img_and_description_in_popup">
+                <img class="more_info_about_post_block__img">
+                <h1>Описание поста</h1>
+                <a class="more_info_about_post__description">название поста</a>
+            </div>
+            <!--  -->
+            <block class="like_comments_favorite_btns">
+                <div class="buttons_in_popup ">
+                    <a class="like_btn_in_post_more_info_popup"><img src="/static/image/likeHearthicon.png"></a>
+                    <a class="save_btn_in_post_more_info_popup" onclick="save_post_to_favorite()"><img src="/static/image/postSaveIcon.png"></a>
+    
+                    <div class="comments_div_in_popup_for_more_info">
+                        <div class="comment_div_in_publication_feed_post">
+                            <h1>Комментарии</h1>
+                            <p >Автор</p>
+                            <a class="comment_in_publication_feed_post">Lorem ipsum dolor sit amet.</a>
+                        </div>
+                    </div>
+                    <!-- блок с комментариями внутри окна с инфой о посте -->
+                    <div class="comments_write_block_in_popup">
+                        <input class="comment_text_input" type="text" placeholder="Оставьте комментарий">
+                        <input class="add_comment_btn" type="button" name="" value=">" onclick="add_comment()">
+                    </div>
+    
+                </div>
+                
+            </block>
+        </div>
+    </div>     
+</html>

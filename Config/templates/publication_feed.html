@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load static %}
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="{% static 'js/modal_popup.js'%}"></script>
+    <script src="{% static 'js/script.js'%}"></script>
+    <title>Лента публикаций</title>
+    <link rel="stylesheet" href="{% static '\css\side_bar_menu.css' %}">
+    <link rel="stylesheet" href="{% static '\css\pub_feed.css' %}">
+
+</head>
+<body>
+    <div class="container">
+        {% include "side_bar_menu.html" %}
+        <div class="feed">
+            {% for post in publication_list %}
+            <div class="post">
+                <img src="{{post.PostVidOrImg.url}}" alt="Публикация">
+                <div class="icons">
+                    <div class="icon like_in_pub_feed" onclick="adding_like_for_post({{post.pk}})">
+                        <img src="{% static 'icons/heart.png'%}" alt="Лайк">
+                        <span>123</span>
+                    </div>
+                    <div class="icon">
+                        <img  onclick="adding_like_for_post({{post.pk}})" src="{% static 'icons/message-324.svg'%}" alt="Комментарии">
+                        <span>45</span>
+                    </div>
+                    <div class="icon">
+                        <img src="save-icon.png" alt="Сохранить">
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

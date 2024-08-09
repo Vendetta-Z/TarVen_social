@@ -1,0 +1,342 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+}
+
+.sidebar ul li a:hover {
+    background-color: #575757;
+}
+
+.main-content {
+    margin-left: 270px;
+    padding: 20px;
+    width: calc(100% - 270px);
+}
+
+.profile-header {
+    text-align: center;
+    background-color: #fff;
+    padding: 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.cover-photo img {
+    width: 100%;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 8px 8px 0 0;
+}
+
+.profile-avatar {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    margin-top: -50px;
+    border: 3px solid #fff;
+}
+
+.profile-name {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.profile-bio {
+    font-size: 16px;
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.profile-actions {
+    margin-top: 10px;
+}
+
+.add_publication_button {
+    width: 35px;
+    height: 35px;
+    color: white;
+    font-size: 1.2em;
+    border: none;
+    background-color: #1da1f2;
+    border-radius: 50%;
+}
+
+.edit-profile-btn {
+    width: 250px;
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-right: 10px;
+}
+
+.edit-profile-btn:hover{
+    background-color: #0d8ae5;
+}
+
+.edit-story-btn{
+    background-color: #1da1f2;
+    color: #fff;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-right: 10px;
+}
+
+.follow-btn {
+    background-color: #1da1f2;
+}
+
+.tweets-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.tweet {
+    padding: 10px 0;
+    border-bottom: 1px solid #e6ecf0;
+    margin-bottom: 20px;
+}
+
+.tweet:last-child {
+    border-bottom: none;
+}
+
+.tweet p {
+    margin: 0 0 10px;
+    color: #333;
+}
+
+.tweet-image {
+    width: 100%;
+    height: 450px;
+    border-radius: 8px;
+    margin-top: 10px;
+    object-fit: cover;
+}
+
+.tweet-date {
+    font-size: 12px;
+    color: #8899a6;
+}
+
+.Post_hearth_icon img{
+    height: 20px;
+    margin: auto 10px;
+}
+
+.Post_comment_icon img{
+    height: 20px;
+    margin: auto 10px;
+}
+
+/* Модальное окно */
+
+.ModalForNewPost {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    border-radius: 10px;
+    animation: fadeIn 0.3s;
+}
+
+@keyframes fadeIn {
+    from {opacity: 0;}
+    to {opacity: 1;}
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+h2 {
+    color: #1da1f2;
+    text-align: center;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label {
+    margin-top: 10px;
+    color: #333;
+}
+
+form input[type="file"] {
+    margin-top: 5px;
+}
+
+form textarea {
+    resize: none;
+    margin-top: 5px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    padding: 10px;
+}
+
+form button {
+    background-color: #1da1f2;
+    color: white;
+    border: none;
+    padding: 10px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+form button:hover {
+    background-color: #1a91da;
+}
+
+
+/* Модальное окно редактирования профиля пользователя */
+.Profile_data_change_popup {
+    display: none;
+    position: fixed;
+    top: 25%;
+    right: 15%;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    max-width: 80%;
+    width: 70%;
+    border: 2px solid #ccc; /* Серый цвет */
+}
+
+h1 {
+    margin-bottom: 20px;
+    font-size: 24px;
+    text-align: center;
+    color: #007BFF; /* Синий цвет */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333; /* Тёмно-серый цвет */
+}
+.covepPopupChangePost{
+    display: none;
+    background-color: rgba(0, 0, 0, 0.4);
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="confirm-password"],
+textarea {
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #007BFF; /* Синий цвет */
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #0056b3; /* Тёмно-синий цвет */
+}
+
+/* Модальное окно изменения публикаций  */
+.covepPopupChangeStory{
+    display: none;
+    width: 100%;
+    height: 100%;
+    background-color:  rgba(0, 0, 0, 0.4);
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.postsBlockInPopup{
+    position: fixed;
+    background-color: #fff;
+    width: 80%;
+    height: 90%;
+    top: 5%;
+    left: 10%;
+    border: 2px solid #aaa;
+    border-radius: 20px ;
+}
+.LabelImg{
+    width: 100%;
+    height: 600px;
+    border-radius: 8px;
+    margin-top: 10px;
+    object-fit:cover;
+}
+
+.DescriptionAreaInPopupEditPost{
+    width: 600px;
+    padding: 8px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}

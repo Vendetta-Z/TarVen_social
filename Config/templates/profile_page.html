@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <title>User Profile</title>
+    
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="{% static 'js/modal_popup.js'%}"></script>
+    <script src="{% static 'js/script.js'%}"></script>
+    
+    <link href="{% static 'css/profile_page.css'%}" rel="stylesheet">     
+    <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        {% include "side_bar_menu.html" %}
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="profile-header">
+                <div class="cover-photo">
+                    <img src="{% static 'image/LinearCoverGradientInProfilePicture.svg'%}" alt="Cover Photo">
+                </div>
+                <div class="profile-info">
+                    <img src="{{user.avatar}}" alt="Аватарка отсутствует" class="profile-avatar">
+                    <h1 class="profile-name">{{user.username}}</h1>
+                    <p class="profile-bio">This is a short user bio. It can be a few sentences long and give an overview of who the user is.</p>
+                    <div class="profile-actions">
+                        <button onclick="openProfileEditPopup()"  class="edit-profile-btn">Edit Profile</button>
+                        <button onclick="openModal()" class="add_publication_button">+</button>
+
+                        {% comment %} <button class="follow-btn">Follow</button> {% endcomment %}
+                    </div>
+
+                </div>
+            </div>
+            <div class="tweets-section">
+                <h2>Your story</h2>
+                {% for post in posts %}
+                    <div class="tweet" onclick="GetPostData({{post.pk}})">
+                        <p>{{post.description}}</p>
+                        <img src="{{post.PostVidOrImg.url}}" alt="Tweet Image 1" class="tweet-image">
+                        <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>
+                        <a class="Post_comment_icon" ><img src=" {% static 'icons/message-324.svg'%}"/><a/>
+                        <span class="tweet-date">{{post.created}}</span>
+
+                    </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Модальное окно публикации нового поста -->
+    <div id="ModalForNewPost" class="ModalForNewPost">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Новая публикация</h2>
+            <div>
+                <label for="post_image_in_new_post_popup_id">Выберите фотографию:</label>
+                <input type="file" id="post_image_in_new_post_popup_id" name="photo" accept="image/*"><br><br>
+                <label for="description_textarea_for_new_post">Описание:</label>
+                <textarea id="description_textarea_for_new_post" name="description" rows="4" cols="50"></textarea><br><br>
+                <button  onclick="send_data_for_create_new_post()">Опубликовать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно редактирования информации о пользователе -->
+    <div id="covepPopupChangePost" class="covepPopupChangePost">
+        <div class="Profile_data_change_popup" >
+            <h1>Редактирование профиля</h1>
+            <form action="change_user_data" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Имя пользователя:</label>
+                    <input type="text" id="username" name="username" value="{{user.username}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="status">Статус:</label>
+                    <input type="text" id="status" name="status" value="{{user.status}}" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">Электронная почта:</label>
+                    <input type="email" id="email" name="email" value="{{user.email}}" required>
+                </div>
+                {% comment %} <div class="form-group">
+                    <label for="age">Возраст:</label>
+                    <input type="number" id="age" name="age" value="текущий_возраст" required>
+                </div> {% endcomment %}
+                {% comment %} <div class="form-group">
+                    <label for="password">password:</label>
+                    <input type="password" id="age" name="age" value="" required>
+                </div>
+                <div class="form-group">
+                    <label for="confirm-password">password:</label>
+                    <input type="confirm-password" id="age" name="age" value="" required>
+                </div> {% endcomment %}
+                <div class="form-group">
+                    <label for="profile-picture">Изменить фотографию профиля:</label>
+                    <input type="file" id="profile-picture" name="avatar" accept="image/*">
+                </div>
+                <button type="submit">Сохранить изменения</button>
+            </form>
+            <button> change password </button>
+        </div>
+    </div>
+
+     <!-- Модальное окно редактирования публикации -->
+    <div id="covepPopupChangeStory" class="covepPopupChangeStory">
+        <div class="postsBlockInPopup">
+            <p>` + postDatadescription +`</p>
+            <img src="" alt="Tweet Image 1" class="tweet-image">
+            <span class="tweet-date">`+ postDatacreated +`</span>
+        </div>
+    </div>
+</body>
+</html>

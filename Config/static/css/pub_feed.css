@@ -1,0 +1,55 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    background-color: #f0f0f0;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+}
+
+.feed {
+    width: 60%; /* Уменьшаем ширину ленты публикаций */
+    padding: 20px;
+    margin-left: 30%;
+    display: inline-block; /* Увеличиваем отступ слева, чтобы публикации не касались сайдбара */
+}
+
+.post {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.post img {
+    width: 100%;
+    height: auto;
+}
+
+.icons {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+.icon {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.icon img {
+    width: 24px;
+    height: 24px;
+    margin-right: 5px;
+}
+
+.icon span {
+    font-size: 16px;
+}
