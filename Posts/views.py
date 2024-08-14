@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.http import JsonResponse
 
-from Config.settings import SECRET_KEY
 from .services import Posts_services
 
 class Posts_views:
@@ -47,6 +46,3 @@ class Posts_views:
         post_id = self.POST['postId']
         Posts_services.delete_post(self, post_id)
         return JsonResponse('post succesfull deleted!', safe=False)    
-
-    # def publish_video(self):
-    #     return render(self, 'publish_video.html')

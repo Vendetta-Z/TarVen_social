@@ -145,7 +145,7 @@ body {
     margin: auto 10px;
 }
 
-/* Модальное окно */
+/* Модальное окно для нового поста */
 
 .ModalForNewPost {
     display: none;
@@ -161,7 +161,7 @@ body {
     align-items: center;
 }
 
-.modal-content {
+.modal-changePost-content {
     background-color: #fff;
     margin: auto;
     padding: 20px;
@@ -171,6 +171,14 @@ body {
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
     border-radius: 10px;
     animation: fadeIn 0.3s;
+}
+
+.ChangePostImage {
+    width: 100%;
+    height: 450px;
+    border-radius: 8px;
+    margin-top: 10px;
+    object-fit: cover;
 }
 
 @keyframes fadeIn {
@@ -233,110 +241,208 @@ form button {
 form button:hover {
     background-color: #1a91da;
 }
-
-
-/* Модальное окно редактирования профиля пользователя */
-.Profile_data_change_popup {
-    display: none;
-    position: fixed;
-    top: 25%;
-    right: 15%;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    max-width: 80%;
-    width: 70%;
-    border: 2px solid #ccc; /* Серый цвет */
+/* Модальное окно  редактирования информации о пользователе  */
+body.modal-open {
+    overflow: hidden; /* Запрещаем прокрутку основного окна */
 }
 
-h1 {
+body.modal-open::-webkit-scrollbar {
+    width: 0; /* Скрытие полосы прокрутки в WebKit-браузерах */
+}
+
+body.modal-open {
+    -ms-overflow-style: none;  /* Скрытие полосы прокрутки в IE и Edge */
+    scrollbar-width: none; /* Скрытие полосы прокрутки в Firefox */
+}
+
+.covepPopupChangePost {
+    
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный фон */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Вверх всех элементов */
+}
+
+.Profile_data_change_popup {
+    background-color: #ffffff; /* Белый фон */
+    padding: 20px;
+    position: absolute;
+    top: 5em;
+    left: 30%;
+    width: 80%;
+    max-width: 500px;
+    max-height: 80%;
+    overflow-y: auto; /* Прокрутка внутри модального окна */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Легкая тень */
+}
+
+.Profile_data_change_popup h1 {
+    color: #1da1f2; /* Синий цвет заголовка */
     margin-bottom: 20px;
-    font-size: 24px;
     text-align: center;
-    color: #007BFF; /* Синий цвет */
 }
 
 .form-group {
     margin-bottom: 15px;
 }
 
-label {
+.form-group label {
     display: block;
+    color: #333333; /* Темно-серый текст */
     margin-bottom: 5px;
-    font-weight: bold;
-    color: #333; /* Тёмно-серый цвет */
-}
-.covepPopupChangePost{
-    display: none;
-    background-color: rgba(0, 0, 0, 0.4);
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    left: 0;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"],
-input[type="confirm-password"],
-textarea {
-    width: 100%;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-}
-
-button {
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="file"] {
     width: 100%;
     padding: 10px;
-    background-color: #007BFF; /* Синий цвет */
-    color: #fff;
+    border: 1px solid #cccccc; /* Серый бордер */
+    border-radius: 5px;
+    box-sizing: border-box;
+}
+
+.save-button {
+    width: 100%;
+    padding: 10px;
+    background-color: #1da1f2; /* Синий фон */
+    color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 5px;
     cursor: pointer;
     font-size: 16px;
+    margin-top: 10px;
 }
 
-button:hover {
-    background-color: #0056b3; /* Тёмно-синий цвет */
-}
-
-/* Модальное окно изменения публикаций  */
-.covepPopupChangeStory{
-    display: none;
+.change-password-button {
     width: 100%;
-    height: 100%;
-    background-color:  rgba(0, 0, 0, 0.4);
+    padding: 10px;
+    background-color: #cccccc; /* Серый фон */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+
+/* Модальное окно  публикаций  */
+
+.modal {
     position: fixed;
     top: 0;
     left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный фон */
+    display: none;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
 }
 
-.postsBlockInPopup{
+.modal-content {
     position: fixed;
-    background-color: #fff;
-    width: 80%;
-    height: 90%;
-    top: 5%;
+    top: 10%;
     left: 10%;
-    border: 2px solid #aaa;
-    border-radius: 20px ;
+    background-color: #fff;
+    padding: 20px;
+    width: 80%;
+    max-height: 80%;
+    overflow-y: auto; /* Прокрутка только внутри модального окна */
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
 }
-.LabelImg{
+
+.tweet-image {
     width: 100%;
-    height: 600px;
+    height: 450px;
     border-radius: 8px;
     margin-top: 10px;
-    object-fit:cover;
+    object-fit: cover;
 }
 
-.DescriptionAreaInPopupEditPost{
-    width: 600px;
-    padding: 8px;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.tweet-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.Tweet-avatar-div {
+    margin-right: 10px;
+}
+
+.Tweet-Avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.Tweet-Author-div {
+    display: flex;
+    flex-direction: column;
+}
+
+.tweet-author-name {
+    font-weight: bold;
+    color: #1da1f2; /* синий цвет имени автора */
+}
+
+.tweet-follow-button {
+    color: #1da1f2;
+    text-decoration: none;
+    font-size: 14px;
+    margin-top: 5px;
+}
+
+.tweet-description {
+    background-color: #ffffff; /* белый фон */
+    padding: 15px;
+    border-radius: 10px;
+    color: #333333; /* темно-серый текст */
+    margin-bottom: 15px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* легкая тень */
+}
+
+.tweet-date {
+    font-size: 12px;
+    color: #8899a6; /* светло-серый цвет для даты */
+    margin-bottom: 20px;
+    display: block;
+}
+
+.comments-section {
+    background-color: #f0f8ff; /* очень светлый синий фон */
+    padding: 15px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* легкая тень */
+}
+
+.comments-title {
+    font-weight: bold;
+    color: #1da1f2; /* синий цвет для заголовка блока комментариев */
+    margin-bottom: 10px;
+}
+
+.comment {
+    background-color: #ffffff; /* белый фон комментария */
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: #333333; /* темно-серый текст */
+}
+
+.comments-soon {
+    font-size: 14px;
+    color: #8899a6; /* светло-серый текст для текста "СКОРО..." */
+    text-align: center;
 }

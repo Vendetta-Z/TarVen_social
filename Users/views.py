@@ -2,7 +2,6 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from .models import *
 
@@ -12,6 +11,7 @@ from Posts.models import Posts
 
 
 class User_views:
+
 
     def profile(self):
         if self.user.is_authenticated is False:
@@ -25,20 +25,17 @@ class User_views:
                 user_profile_data
             )
 
-
     def publication_feed(self):
         #TODO перенести всю бизнес логику ленты публикаций в сервисы
         publication = Posts.objects.all().order_by('-created')
 
         return render(self, 'publication_feed.html', { 'publication_list' : publication } )
 
-
     def get_user_profile(self, id):
         user_by_id =  User.objects.get(id=id)
         user_profile_data = Users_services.get_another_user_profile(self, user_by_id)
 
         return render(self, 'another_user_profile.html', user_profile_data)
-
 
     def change_user_data(self):
         if self.POST:
@@ -48,11 +45,9 @@ class User_views:
                 requestFiles = self.FILES['avatar']
             return Users_services.change_user_data(self, requestFiles)
 
-
     def get_user_subscribes(self):
         subscribers = Users_services.get_user_subscribes_data(self)
         return render(self, 'user_subscribes.html', {'subscribes': subscribers})
-
 
     def subscribe(self):
         if self.POST:
@@ -60,17 +55,14 @@ class User_views:
             Users_services.subscribe_user(self, user_id=user_id)
             return JsonResponse('successfull subscribed!', safe=False)
 
-
     def unsubscribe(self):
         if self.POST:
             following_user_id = self.POST.get('following_user_id')
             return Users_services.unsubscribe_user(self, following_user_id)
         return redirect('/publication_feed')    
-
     # Define a view function for the home page
     def home(request):
         return render(request, 'profile_copy.html')
-
 
     def logout(request):
         if User.is_authenticated:
@@ -78,7 +70,6 @@ class User_views:
             return redirect('/login/')
         else:
             return redirect('/login/')
-
     # Define a view function for the login page
     def login_page(request):
         # Check if the HTTP request method is POST (form submission)
@@ -106,7 +97,6 @@ class User_views:
         
         # Render the login page template (GET request)
         return render(request, 'authorization/login.html')
-
     # Define a view function for the registration page
     def register_page(request):
         # Check if the HTTP request method is POST (form submission)

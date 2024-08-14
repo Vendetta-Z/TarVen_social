@@ -16,7 +16,6 @@ urlpatterns = [
     path('<int:id>', User_views.get_user_profile),
     path('change_user_data', User_views.change_user_data),
     path('publication_feed', User_views.publication_feed),
-    # path('publish_video', User_views.publish_video), Не понятно что я хотел сделать, но после реструктуризации проекта , в случае ненадобности данной строки удалить с корнями
     path('subscribe', User_views.subscribe, name='subscibe_to'),
     path('user_subscribes', User_views.get_user_subscribes, name='user_subscribes'),
     path('unsubscribe', User_views.unsubscribe, name='unsubscribe'),
