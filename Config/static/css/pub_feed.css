@@ -147,6 +147,9 @@ body {
     font-size: 14px;
     margin-top: 5px;
 }
+.tweet-follow-button:hover{
+    cursor: pointer;
+}
 
 .tweet-description {
     background-color: #ffffff; /* белый фон */
@@ -189,4 +192,8 @@ body {
     font-size: 14px;
     color: #8899a6; /* светло-серый текст для текста "СКОРО..." */
     text-align: center;
+}
+
+.LikeIconPopup{
+    width: 30px;
 }

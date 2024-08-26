@@ -8,6 +8,8 @@ window.onclick = function(event) {
         modal.style.display = 'none';
         covepPopupChangePost.style.display = 'none';
         ModalForNewPost.style.display = 'none';
+        $('.comments-section').empty()
+
     }
 }
 
@@ -19,6 +21,7 @@ document.addEventListener('keydown', function (e) {
         covepPopupChangePost.style.display = 'none';
         modal.style.display = 'none';
         ModalForNewPost.style.display = 'none';
+        $('.comments-section').empty()
     }
 })
 
@@ -144,49 +147,6 @@ function sendDataToChangeProfile(){
         data:formdata,
         success: function(data){
 
-        }
-    })
-}
-//изменение данных поста
-function GetPostData(post_id){
-    $.ajax({
-        url:'get_post',
-        headers: { "X-CSRFToken": getCookie("csrftoken")},
-        data:{'post_id':post_id},
-        method:'GET',
-        success: function(data){
-            postData = JSON.parse(data['post']);
-            author = JSON.parse(data['author']);
-
-            $('.modal').css('display', 'block');
-            $('.modal-content').html(   `
-                <div class="tweet-header">
-                    <div class="Tweet-avatar-div">
-                        <img src="`+ author[0].fields.avatar +`" alt="avatar in pub feed popup" class="Tweet-Avatar">
-                    </div>
-                    <div class="Tweet-Author-div">
-                        <a class="tweet-author-name" href="get">`+ author[0].fields.username +`</a>
-                        <a class="tweet-follow-button">Подписаться</a>
-                    </div>
-                </div>
-               <img src="`+ postData[0].fields.PostVidOrImg +`" alt="Tweet Image 1" class="tweet-image">
-
-                <p class="tweet-description">`+ postData[0].fields.description +`</p>
-
-                <span class="tweet-date">`+ postData[0].fields.created +`</span> 
-
-                <div class="comments-section">
-                    <p class="comments-title">Блок с комментами</p>
-                    <div class="comment">
-                        <p>Комментарий 1</p>
-                    </div>
-                    <div class="comment">
-                        <p>Комментарий 2</p>
-                    </div>
-                    <p class="comments-soon">СКОРО...</p>
-                </div>
-                <button onclick ="openPostEditPopup(`+ post_id +`)" >edit post Publication</button>
-            `)
         }
     })
 }

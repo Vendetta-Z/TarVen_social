@@ -4,7 +4,7 @@ from django.contrib.auth import login
 
 from .models import User, UserFollowing
 from Posts.models import Posts
-
+from Comments.views import CommentsViews
 
 class Users_services:   
 
@@ -17,19 +17,16 @@ class Users_services:
             else:
                 return JsonResponse({'response': 404, 'message': 'Такой пользователь не найден'})
 
-
     def get_user_profile_data(self):
         user_subscribers = UserFollowing.objects.filter(following_user=self.user)
         user_subscribes = UserFollowing.objects.filter(user_id=self.user)
         postWithoutVideo = Posts.objects.filter(author=self.user)
         AllPostedPublication = postWithoutVideo
-        
         return {
             'user': self.user,
             'subscribes': len(user_subscribes),
             'subscribers': len(user_subscribers),
-            'posts': postWithoutVideo
-
+            'posts': postWithoutVideo,
         }
 
     def change_user_data(self, requestFiles):
@@ -45,7 +42,6 @@ class Users_services:
 
         return redirect('/')
 
-
     def get_another_user_profile(self, user):
         user_subscribers = UserFollowing.objects.filter(following_user=user)
         user_subscribes = UserFollowing.objects.filter(user_id=user.id)
@@ -60,7 +56,7 @@ class Users_services:
     def subscribe_user(self, user_id):
         subscribed_to_user = User.objects.get(id=user_id)
         if UserFollowing.objects.filter(user_id=self.user, following_user=subscribed_to_user):
-            return JsonResponse('вы уже подписались на этого пользователя!', safe=False)
+            return JsonResponse('200', safe=False)
         else:
             newFollowingUser = UserFollowing(
                 user_id=self.user,

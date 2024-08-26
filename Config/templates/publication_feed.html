@@ -6,6 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="{% static 'js/script.js'%}"></script>
     <script src="{% static 'js/pubFeed.js'%}"></script>
     <title>Лента публикаций</title>
     <link rel="stylesheet" href="{% static '\css\side_bar_menu.css' %}">
@@ -17,7 +18,7 @@
         {% include "side_bar_menu.html" %}
         <div class="feed">
             {% for post in publication_list %}
-            <div class="post" onclick="GetPostData({{post.pk}})">
+            <div class="post" onclick="OpenPostPopup({{post.pk}})">
                 <img src="{{post.PostVidOrImg.url}}" alt="Публикация">
                 <div class="icons">
                     <div class="icon like_in_pub_feed" onclick="adding_like_for_post({{post.pk}})">
@@ -36,10 +37,35 @@
             {% endfor %}
         </div>
     </div>
-    <!-- Модальное окно редактирования публикации -->
-    <div id="modal" class="modal">
+
+     <!-- Модальное окно публикации-->
+     <div id="modal" class="modal">
         <div class="modal-content">
-        </div>    
+            <div class="tweet-header">
+                <div class="Tweet-avatar-div">
+                    <a id="Tweet-Avatar-link"><img  src="" alt="avatar in pub feed popup" class="Tweet-Avatar" id="Tweet-Avatar"></a>
+                </div>
+                <div class="Tweet-Author-div">
+                    <a class="tweet-author-name" href="${ author[0].pk }"></a>
+                    <button onclick="" class="tweet-follow-button"></button>
+                </div>
+            </div>
+            <img src="" alt="Tweet Image 1" class="tweet-image">
+            <a class="LikeIconCountTag" onclick="" ><img class="LikeIconPopup" src="" /></a>
+            <a> Comments 12 </a>
+            <p class="tweet-description"></p>
+            <span class="tweet-date"></span> 
+
+            <div class="comments-write-section">
+                <div class="comments-write">
+                    <input type="text" class="modal-commentInput" id="textInput" /><a onclick="" class="Modal-CommentSubmitBtn">Отправить<a/>
+                </div>
+            </div>
+                <div class="comments-section">
+            </div>
+            <button  class="modalChangePostBtn">edit post Publication</button>
+        </div>
     </div>
+    
 </body>
 </html>

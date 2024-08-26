@@ -17,9 +17,9 @@ class Posts_services:
         post = Posts.objects.get(id=post_id)
         post_likes_len = len(Like.objects.filter(product=post))
 
-        like_icon = "/static/image/likeHearthicon.png"
+        like_icon = "Config\static\icons\heart.png"
         if Like.check_user_liked(self, user=self.user, post=post):
-            like_icon = "/static/image/likeHearthicon_after.png"
+            like_icon = "Config/static/icons/red_heart.png"
 
         post_comments = Comments.objects.filter(post=post).order_by('-created')
         schema = CommentsSchema(many=True)

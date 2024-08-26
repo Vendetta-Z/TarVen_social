@@ -22,7 +22,7 @@ class Posts_views:
     def get_post(self):
         post_id = self.GET.get('post_id')
         post_data = Posts_services.get_post_data(self, post_id=post_id)
-
+        
         return JsonResponse(
             post_data,
             safe=False

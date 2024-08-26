@@ -6,6 +6,7 @@ from django.conf import settings
 from Posts.views import Posts_views
 from Users.views import User_views
 from Likes.views import LikeViews
+from Comments.views import CommentsViews
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', User_views.profile),
@@ -19,6 +20,9 @@ urlpatterns = [
     path('subscribe', User_views.subscribe, name='subscibe_to'),
     path('user_subscribes', User_views.get_user_subscribes, name='user_subscribes'),
     path('unsubscribe', User_views.unsubscribe, name='unsubscribe'),
+
+    path('Comments/new_comment', CommentsViews.new_comment, name='add_comment'),
+    # path('Comments/get_comments', CommentsViews.getComments, name='get_comments'),
 
 
     path('get_post', Posts_views.get_post, name='get_post'),

@@ -5,3 +5,4 @@ class CommentsSchema(Schema):
     post = fields.Str()
     text = fields.Str()
     created = fields.DateTime()
+    

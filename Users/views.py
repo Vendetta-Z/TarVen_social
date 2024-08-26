@@ -62,7 +62,7 @@ class User_views:
         return redirect('/publication_feed')    
     # Define a view function for the home page
     def home(request):
-        return render(request, 'profile_copy.html')
+        return render(request, 'profile_page.html')
 
     def logout(request):
         if User.is_authenticated:

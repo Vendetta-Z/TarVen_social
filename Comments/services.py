@@ -15,3 +15,12 @@ class comments_services:
             'text': comm.text,
             'created': comm.created
         })
+    
+
+    # def getComments(post_id):
+    #     avatars = []
+    #     filteredComm = Comments.objects.filter(post = post_id)
+    #     for comm in filteredComm:
+    #         avatarFromCommAuthor = Comments.getAvatar(comm)
+
+    #     return filteredComm, avatars

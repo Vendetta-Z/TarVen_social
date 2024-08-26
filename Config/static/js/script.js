@@ -24,12 +24,12 @@ function adding_like_for_post(post_id){
         method:'POST',
         success:function(data){
             if(data['method'] === 'A'){
-                $('.Post_hearth_icon').html(('<img src="'+ data['like_icon'] +'"></img>'))
-                $('.like_in_pub_feed').html(('<img src="'+ data['like_icon'] +'"></img>'))
+                $('.LikeIconCountTag').html(('<img class="LikeIconPopup"  src="'+ data['like_icon'] +'"></img>'))
+                $('.like_in_pub_feed').html(('<img class="LikeIconPopup"  src="'+ data['like_icon'] +'"></img>'))
             }
             else if(data['method'] === 'R'){
-                $('.Post_hearth_icon').html(('<img src="'+ data['like_icon'] +'"></img>'))
-                $('.like_in_pub_feed').html(('<img src="'+ data['like_icon'] +'"></img>'))
+                $('.LikeIconCountTag').html(('<img class="LikeIconPopup"  src="'+ data['like_icon'] +'"></img>'))
+                $('.like_in_pub_feed').html(('<img class="LikeIconPopup"  src="'+ data['like_icon'] +'"></img>'))
 
             }
         }
@@ -43,8 +43,8 @@ function subscribe_to_user(user_id){
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         data:{'user_id': user_id},
         success: (data) => {
-            $('#sub_unsub_to_user_btn').text('Отписаться');
-            $('#sub_unsub_to_user_btn').attr('onclick', 'unsubscribe_user('+ user_id +')');
+            $('.tweet-follow-button').text('Отписаться');
+            $('.tweet-follow-button').attr('onclick', 'unsubscribe_user('+ user_id +')');
         }
     })
 }
@@ -56,29 +56,101 @@ function unsubscribe_user(post_author){
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         data:{'following_user_id': post_author},
         success: (data) => {
-            $('#sub_unsub_to_user_btn').text('Подписаться');
-            $('#sub_unsub_to_user_btn').attr('onclick', 'subscribe_to_user( '+ post_author +' )');
+            $('.tweet-follow-button').text('Подписаться');
+            $('.tweet-follow-button').attr('onclick', 'subscribe_to_user('+ post_author +')');
         }
     })
 }
 
 function add_comment(post_id){
-    text = $('.comment_text_input').val()
+    
+    CommentInput = (document.getElementsByClassName("modal-commentInput")[0].value);
+    console.log(CommentInput)
     $.ajax({
         url:'Comments/new_comment',
-        data:{'post_id': post_id, 'comm_text': text},
+        data:{'post_id': post_id, 'comm_text': CommentInput},
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         method:'POST',
         success:function(data){
-            $('.comment_div_in_publication_feed_post').append(`
-            <div class="comment_in_publication_feed_post">
-                <p>Автор:  ` + data['author'] + `</p>
-                <a class="comment_in_publication_feed_post"> Текст комментария:<br/> ` + data['text'] + `</a>
-                <p>--------------------------------</p>
+            console.log(data)
+            $('.comments-section').append(`
+            <div>
+                <img class="comments-author-avatar" />
+                <p class="Comments-section-author-name">${ comments[comment].author }</p>
+                <p class="Comments-section-comment-text">${ comments[comment].text }</p>
             </div>
             `)
         }
     })
+}
+
+function OpenPostPopup(post_id){
+    $.ajax({
+        url:'get_post',
+        headers: { "X-CSRFToken": getCookie("csrftoken")},
+        data:{'post_id':post_id},
+        method:'GET',
+        success: function(data){
+            postData = JSON.parse(data['post']);
+            author = JSON.parse(data['author']);
+            comments = data['comments']
+            
+            userFollowingBtn = [`subscribe_to_user(${author[0].pk})`, 'Подписаться']
+            if(data.self_user_follow_author == 1){
+                userFollowingBtn = [`unsubscribe_user(${author[0].pk})`,'Отписаться']
+            }
+
+            $('.modal').css('display', 'block');
+
+            $('.Tweet-Avatar').attr('src', author[0].fields.avatar);
+            $('.Tweet-Avatar-link').attr('href', author[0].pk);
+
+            $('.tweet-author-name').attr('href', author[0].pk);
+            $('.tweet-author-name').text(author[0].fields.username);
+            $('.tweet-follow-button').attr('onclick', userFollowingBtn[0]);
+            $('.tweet-follow-button').text(userFollowingBtn[1]);
+
+            $('.tweet-image').attr('src', postData[0].fields.PostVidOrImg)
+            $('.LikeIconCountTag').attr('onclick', `adding_like_for_post(${post_id})`)
+            $('.LikeIconPopup').attr('src', data.like_icon)
+            $('.tweet-comment-link').attr('onclick', `openCommentsPopup(${post_id})`)
+            $('.tweet-comment-icon').attr('src', 'Config/static/icons/message-324.svg')
+
+            $('.tweet-description').text(postData[0].fields.description)
+            $('.tweet-date').text(postData[0].fields.created)
+            $('.Modal-CommentSubmitBtn').attr('onclick', `add_comment(${ post_id })`)
+            $('.LikeIconCountTag')
+            $('.LikeIconCountTag')
+            $('.LikeIconCountTag')
+            $('.modalChangePostBtn').attr('onclick', `openPostEditPopup(${ post_id })`)  
+        }
+    })
+}
+
+function openCommentsPopup(post_id){
+
+    $.ajax({
+        url:'get_post',
+        headers: { "X-CSRFToken": getCookie("csrftoken")},
+        data:{'post_id':post_id},
+        method:'GET',
+        success: function(data){
+            $('.modal').css('display', 'none');
+            $('.comments-write-section').css('display', 'block');
+            $('.comments-modal').css('display', 'block');
+            console.log(data)
+            for (comment in comments){
+                console.log(comments[comment])
+                $('.comments-section').prepend(`
+                    <div>
+                        <img class="comments-author-avatar" src="${ comments[comment].author.avatar }"/>
+                        <p class="Comments-section-author-name">${ comments[comment].author }</p>
+                        <p class="Comments-section-comment-text">${ comments[comment].text }</p>
+                    </div>
+                    `)
+                }
+        }})
+    
 }
 
 function save_post_to_favorite(post_id){

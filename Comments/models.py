@@ -16,6 +16,10 @@ class Comments(models.Model):
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
     text = models.CharField(max_length=500)
     created = CustomDateTimeField(auto_now_add=True)
-
+    
     class META:
-        fields = ['author', 'post', 'text', 'created']
+        fields = ['author',  'post', 'text', 'created']
+
+    def getAvatar(self):
+        return self.author.avatar.url if self.author.avatar else None
+    
