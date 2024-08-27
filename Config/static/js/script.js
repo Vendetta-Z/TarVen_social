@@ -65,14 +65,12 @@ function unsubscribe_user(post_author){
 function add_comment(post_id){
     
     CommentInput = (document.getElementsByClassName("modal-commentInput")[0].value);
-    console.log(CommentInput)
     $.ajax({
         url:'Comments/new_comment',
         data:{'post_id': post_id, 'comm_text': CommentInput},
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         method:'POST',
         success:function(data){
-            console.log(data)
             $('.comments-section').append(`
             <div>
                 <img class="comments-author-avatar" />
@@ -112,7 +110,9 @@ function OpenPostPopup(post_id){
 
             $('.tweet-image').attr('src', postData[0].fields.PostVidOrImg)
             $('.LikeIconCountTag').attr('onclick', `adding_like_for_post(${post_id})`)
-            $('.LikeIconPopup').attr('src', data.like_icon)
+            $('.LikeIconPopup').html=`
+            `
+            attr('src', data.like_icon)
             $('.tweet-comment-link').attr('onclick', `openCommentsPopup(${post_id})`)
             $('.tweet-comment-icon').attr('src', 'Config/static/icons/message-324.svg')
 
@@ -138,12 +138,10 @@ function openCommentsPopup(post_id){
             $('.modal').css('display', 'none');
             $('.comments-write-section').css('display', 'block');
             $('.comments-modal').css('display', 'block');
-            console.log(data)
+
             for (comment in comments){
-                console.log(comments[comment])
                 $('.comments-section').prepend(`
                     <div>
-                        <img class="comments-author-avatar" src="${ comments[comment].author.avatar }"/>
                         <p class="Comments-section-author-name">${ comments[comment].author }</p>
                         <p class="Comments-section-comment-text">${ comments[comment].text }</p>
                     </div>

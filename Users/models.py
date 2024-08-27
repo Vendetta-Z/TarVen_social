@@ -6,7 +6,7 @@ from typing import Any
 
 class User(AbstractUser):
     status = models.CharField(max_length=120, default='Hi i\'m use a TarVin', null=False)
-    avatar = models.ImageField(default='Config/image/default_avatar.png', upload_to='Config/static/PostData')
+    avatar = models.ImageField(default='Config/static/image/default_avatar.png', upload_to='Config/static/PostData')
     
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)

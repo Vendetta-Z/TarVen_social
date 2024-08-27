@@ -34,10 +34,11 @@ class Users_services:
         user = User.objects.get(id=self.user.id)
         for data in new_data_for_user:
             user.__dict__[data] = new_data_for_user[data]
+        user.avatar = self.user.avatar
 
         if requestFiles:
             user.avatar = self.FILES['avatar']
-            print('a=========================================')
+            
         user.save()
 
         return redirect('/')

@@ -17,7 +17,7 @@ class Posts_services:
         post = Posts.objects.get(id=post_id)
         post_likes_len = len(Like.objects.filter(product=post))
 
-        like_icon = "Config\static\icons\heart.png"
+        like_icon = "Config/static/icons/heart.png"
         if Like.check_user_liked(self, user=self.user, post=post):
             like_icon = "Config/static/icons/red_heart.png"
 

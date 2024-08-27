@@ -18,7 +18,7 @@ class Posts(models.Model):
     description = models.CharField(max_length=350)
     created = models.DateTimeField(auto_now=True)
     preview = models.ImageField( blank=True,upload_to=getFileUploadURL, max_length=528)
-    PostVidOrImg = models.FileField( upload_to=f'Config\static\PostData',
+    PostVidOrImg = models.FileField( upload_to=f'Config/static/PostData',
                                     validators=[FileExtensionValidator(allowed_extensions=['jpeg','jpg', 'png','mp4'])])
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

@@ -3,12 +3,13 @@ window.onclick = function(event) {
     var modal = document.getElementById('modal');
     var covepPopupChangePost = document.getElementById('covepPopupChangePost');
     var ModalForNewPost = document.getElementById('ModalForNewPost');
-   
-    if ( event.target === modal || event.target === ModalForNewPost || event.target === covepPopupChangePost) {
+
+    if ( event.target === modal || event.target === ModalForNewPost ||
+         event.target === covepPopupChangePost) {
         modal.style.display = 'none';
         covepPopupChangePost.style.display = 'none';
         ModalForNewPost.style.display = 'none';
-        $('.comments-section').empty()
+        $('.comments-section').empty();
 
     }
 }
@@ -22,6 +23,7 @@ document.addEventListener('keydown', function (e) {
         modal.style.display = 'none';
         ModalForNewPost.style.display = 'none';
         $('.comments-section').empty()
+        $('.comments-modal').css('display', 'none');
     }
 })
 
@@ -34,22 +36,6 @@ const Scroll_Controler = {
     EnableScrool(){
         document.body.style.cssText = ''
     }
-}
-
-function getCookie(name) {
-    let cookieValue = null;
-    if (document.cookie && document.cookie !== '') {
-        const cookies = document.cookie.split(';');
-        for (let i = 0; i < cookies.length; i++) {
-            const cookie = cookies[i].trim();
-            // Does this cookie string begin with the name we want?
-            if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                break;
-            }
-        }
-    }
-    return cookieValue;
 }
 
 function send_data_for_create_new_post(){
@@ -75,8 +61,8 @@ function send_data_for_create_new_post(){
                     <div class="tweet post`+ post[0].pk +`" onclick="GetPostData(`+ post[0].pk + `)">
                         <p>`+ post[0].fields.description +`</p>
                         <img src=`+ post[0].fields.PostVidOrImg +` alt="Tweet Image 1" class="tweet-image">
-                        <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>
-                        <a class="Post_comment_icon" ><img src=" {% static 'icons/message-324.svg'%}"/><a/>
+                        <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src="/Config/static/icons/heart.png"/><a/>
+                        <a class="Post_comment_icon" ><img src="/Config/static/icons/message-324.svg"/><a/>
                         <span class="tweet-date">`+ post[0].fields.created +`</span>
                     </div>`
             $('.tweets-section').prepend(div_block_with_new_post)
@@ -99,7 +85,7 @@ function openPostEditPopup(post_id){
         success: function(data){
             postData = JSON.parse(data['post']);
             $('.modal').css('display', 'block');
-            $('.modal-content').html(`<label for="PostChangedImageInPopup">
+            $('.change-content').html(`<label for="PostChangedImageInPopup">
                                         <img src="`+ postData[0].fields.PostVidOrImg +`" alt="Tweet Image 1" class="ChangePostImage"></label>
                                         <input type="file" id="PostChangedImageInPopup" style="display:none;" name="photo" accept="image/*"></label><br><br>
                 
@@ -206,7 +192,7 @@ function send_changed_data_to_back(post_id){
         headers: { "X-CSRFToken": getCookie("csrftoken")},
 
         success: function(data){
-            refresh_changed_pub_in_profile(post_id);
+            location.reload();
         }
     })
 }
