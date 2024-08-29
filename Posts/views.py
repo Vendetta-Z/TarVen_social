@@ -1,3 +1,5 @@
+
+import os.path
 from django.shortcuts import render
 from django.http import JsonResponse
 
@@ -29,9 +31,9 @@ class Posts_views:
         )
 
     def create_post(self):
-        postImage = self.FILES['postImage']
+        postFileInRequest= self.FILES['postImage']
         postDescription = self.POST.get('postDescription')
-        Post = Posts_services.create_new_post(self, postImage, postDescription)
+        Post = Posts_services.create_new_post(self, postFileInRequest, postDescription)
         return JsonResponse(Post, safe=False)
 
     def change_post_data(self):

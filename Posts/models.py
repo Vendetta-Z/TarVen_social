@@ -1,52 +1,51 @@
+import os.path
+
 from django.conf import settings
 from django.db import models
-from django.contrib.auth.models import User
 from django.core.validators import FileExtensionValidator
 
 from typing import Any
 import cv2
 
 
-class Posts(models.Model):
-    imageTypesForPost = ['jpeg','jpg', 'png']
-    videoTypesForPost = ['mp4']
-    allTypesForPost = str(imageTypesForPost) + str(videoTypesForPost)
-    #To do write a function to create and upload file on specified folder  
-    getFileUploadURL = f'Config/static/PostData/'
+def getUploadFileUrl(instance, filename):
+    fileType = Posts.CheckTypeOfFile(filename)
+    upload_dir = f'Config/static/PostData/{instance.author.id}/{fileType}/'
 
+    if not os.path.isdir(upload_dir):
+        os.makedirs(upload_dir)
+
+    return os.path.join(upload_dir, filename)
+
+
+
+class Posts(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=350)
     created = models.DateTimeField(auto_now=True)
-    preview = models.ImageField( blank=True,upload_to=getFileUploadURL, max_length=528)
-    PostVidOrImg = models.FileField( upload_to=f'Config/static/PostData',
-                                    validators=[FileExtensionValidator(allowed_extensions=['jpeg','jpg', 'png','mp4'])])
+
+
+    imageTypesForPost = ['jpeg','jpg', 'png']
+    videoTypesForPost = ['mp3', 'mp4']
+    allTypesForPost = str(imageTypesForPost + videoTypesForPost)
+    PostFile = models.FileField(upload_to=getUploadFileUrl,
+                                validators=[FileExtensionValidator(allowed_extensions=[allTypesForPost])])
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        if self.PostVidOrImg:
-            if self.PostVidOrImg.url[-3:] == 'mp4' and self.preview == '':
-                PostVideo = cv2.VideoCapture((self.PostVidOrImg.url)[1:])
-                img = PostVideo.read()[1]
-                nameOfSavedPreview = (self.PostVidOrImg.url.split('.')[0] + 'PostPreview.jpg')[1:]
-                cv2.imwrite(nameOfSavedPreview, img)
-                self.preview = nameOfSavedPreview
-                    
-                
-    def CheckTypeOfFile(self):
-        fileType = ''
-        filename = self.PostVidOrImg.name
-        try:
-            extension = filename.split('.')[-1]
-            if extension == 'mp4':
-                fileType = 'video'
-            else:
-                fileType = 'img'
-        except Exception :
-            fileType = 'incorrect'
-        
-        return fileType
 
 
+    @staticmethod
+    def CheckTypeOfFile(filename):
+        # Получаем расширение файла
+        extension = filename.split('.')[-1].lower()
+        # Определяем тип файла по расширению
+        if extension in ['mp3', 'mp4']:
+            return 'video'
+        elif extension in ['jpeg', 'jpg', 'png']:
+            return 'image'
+        else:
+            return 'unknown'
 
 
 class Saved_post(models.Model):

@@ -19,7 +19,7 @@
         <div class="feed">
             {% for post in publication_list %}
             <div class="post" onclick="OpenPostPopup({{post.pk}})">
-                <img src="{{post.PostVidOrImg.url}}" alt="Публикация">
+                <img src="{{post.PostFile.url}}" alt="Публикация">
                 <div class="icons">
                     <div class="icon like_in_pub_feed" onclick="adding_like_for_post({{post.pk}})">
                         <img src="{% static 'icons/heart.png'%}" alt="Лайк">
@@ -40,7 +40,7 @@
 
      <!-- Модальное окно публикации-->
      <div id="modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content change-content">
             <div class="tweet-header">
                 <div class="Tweet-avatar-div">
                     <a id="Tweet-Avatar-link"><img  src="" alt="avatar in pub feed popup" class="Tweet-Avatar" id="Tweet-Avatar"></a>
@@ -52,20 +52,25 @@
             </div>
             <img src="" alt="Tweet Image 1" class="tweet-image">
             <a class="LikeIconCountTag" onclick="" ><img class="LikeIconPopup" src="" /></a>
-            <a> Comments 12 </a>
+            <a class="tweet-comment-link" onclick="" ><img class="tweet-comment-icon" src="" /></a>
             <p class="tweet-description"></p>
             <span class="tweet-date"></span> 
-
-            <div class="comments-write-section">
-                <div class="comments-write">
-                    <input type="text" class="modal-commentInput" id="textInput" /><a onclick="" class="Modal-CommentSubmitBtn">Отправить<a/>
-                </div>
-            </div>
-                <div class="comments-section">
-            </div>
             <button  class="modalChangePostBtn">edit post Publication</button>
         </div>
     </div>
     
+    <!-- Модальное окно с комментариями -->
+    <div class="comments-modal">
+        <div class="comments-write-section">
+            <div>
+                <div class="comments-write">
+                    <input type="text" class="modal-commentInput" id="textInput" />
+                    <a onclick="" class="Modal-CommentSubmitBtn">Отправить</a>
+                </div>
+            </div>
+        </div>
+            <div class="comments-section"></div>
+        </div>
+     </div>
 </body>
 </html>

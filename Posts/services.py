@@ -1,3 +1,5 @@
+import os.path
+
 from django.http import JsonResponse
 from django.core import serializers
 
@@ -65,7 +67,7 @@ class Posts_services:
     def create_new_post(self, postImage, postDescription):
         Post = Posts(
             author=self.user,
-            PostVidOrImg=postImage,
+            PostFile=postImage,
             description=postDescription
             )
         Post.save()
@@ -75,7 +77,7 @@ class Posts_services:
     def change_post_data(Request_POST, request_FILES):
         post_by_id = Posts.objects.get(id=Request_POST['id'])
         if request_FILES:
-            post_by_id.PostVidOrImg = request_FILES
+            post_by_id.PostFile = request_FILES
         post_by_id.description = Request_POST['post_description']
         post_by_id.save()
         return JsonResponse('200' , safe=False)

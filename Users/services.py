@@ -21,7 +21,7 @@ class Users_services:
         user_subscribers = UserFollowing.objects.filter(following_user=self.user)
         user_subscribes = UserFollowing.objects.filter(user_id=self.user)
         postWithoutVideo = Posts.objects.filter(author=self.user)
-        AllPostedPublication = postWithoutVideo
+        
         return {
             'user': self.user,
             'subscribes': len(user_subscribes),

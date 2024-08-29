@@ -1,4 +1,3 @@
-// Закрытие модального окна при клике вне его
 window.onclick = function(event) {
     var modal = document.getElementById('modal');
     var covepPopupChangePost = document.getElementById('covepPopupChangePost');
@@ -38,6 +37,11 @@ const Scroll_Controler = {
     }
 }
 
+//Подгрузка плееров после окончательной загрузки страницы.
+document.addEventListener("DOMContentLoaded", function () {
+            const players = Plyr.setup('.plyr');
+});
+
 function send_data_for_create_new_post(){
     postImage = document.getElementById('post_image_in_new_post_popup_id').files[0]
     postDescription = document.getElementById('description_textarea_for_new_post').value
@@ -58,12 +62,12 @@ function send_data_for_create_new_post(){
             var post = JSON.parse(data)
             console.log(post)
             var div_block_with_new_post = `
-                    <div class="tweet post`+ post[0].pk +`" onclick="GetPostData(`+ post[0].pk + `)">
+                    <div class="tweet post${post[0].pk}" onclick="OpenPostPopup(${post[0].pk})">
                         <p>`+ post[0].fields.description +`</p>
-                        <img src=`+ post[0].fields.PostVidOrImg +` alt="Tweet Image 1" class="tweet-image">
-                        <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src="/Config/static/icons/heart.png"/><a/>
+                        <img src=`+ post[0].fields.PostFile +` alt="Tweet Image 1" class="tweet-image">
+                        <a class="Post_hearth_icon" onclick="adding_like_for_post(${post[0].pk})" ><img src="/Config/static/icons/heart.png"/><a/>
                         <a class="Post_comment_icon" ><img src="/Config/static/icons/message-324.svg"/><a/>
-                        <span class="tweet-date">`+ post[0].fields.created +`</span>
+                        <span class="tweet-date">${post[0].fields.created}</span>
                     </div>`
             $('.tweets-section').prepend(div_block_with_new_post)
 
@@ -86,7 +90,7 @@ function openPostEditPopup(post_id){
             postData = JSON.parse(data['post']);
             $('.modal').css('display', 'block');
             $('.change-content').html(`<label for="PostChangedImageInPopup">
-                                        <img src="`+ postData[0].fields.PostVidOrImg +`" alt="Tweet Image 1" class="ChangePostImage"></label>
+                                        <img src="`+ postData[0].fields.PostFile +`" alt="Tweet Image 1" class="ChangePostImage"></label>
                                         <input type="file" id="PostChangedImageInPopup" style="display:none;" name="photo" accept="image/*"></label><br><br>
                 
                                         <p>Post description</p>
@@ -100,11 +104,11 @@ function openPostEditPopup(post_id){
 
 function openNewPostPopup(){
     $('.ModalForNewPost').css('display', 'block');
-    $('.modal-content').html(`<span class="close" onclick="closeModal()">&times;</span>
+    $('.modal-for-new-post').html(`<span class="close" onclick="closeModal()">&times;</span>
             <h2>Новая публикация</h2>
             <div>
                 <label for="post_image_in_new_post_popup_id">Выберите фотографию:</label>
-                <input type="file" id="post_image_in_new_post_popup_id" name="photo" accept="image/*"><br><br>
+                <input type="file" id="post_image_in_new_post_popup_id" name="photo" accept="image/video*"><br><br>
                 <label for="description_textarea_for_new_post">Описание:</label>
                 <textarea id="description_textarea_for_new_post" name="description" rows="4" cols="50"></textarea><br><br>
                 <button  onclick="send_data_for_create_new_post()">Опубликовать</button>
@@ -215,3 +219,4 @@ function deletePublication(postId){
     }
     
 }
+

@@ -151,6 +151,11 @@ body {
     cursor: pointer;
 }
 
+.tweet-comment-icon {
+    width: 30px;
+    margin-left: 5px;
+}
+
 .tweet-description {
     background-color: #ffffff; /* белый фон */
     padding: 15px;
@@ -196,4 +201,94 @@ body {
 
 .LikeIconPopup{
     width: 30px;
+}
+
+
+/* Модальное окно с комментариями  */
+
+.comments-modal{
+    padding: 2%;
+    display: none;
+    position: fixed;
+    background-color: white;
+    top: 4%;
+    left: 7%;
+    width: 80%;
+    height: 85%;
+    border-radius: 5px;
+}
+
+.comments-section div{
+    position: relative;
+    width: 100%;
+    background-color: #b9b8b8;
+    border-radius: 5px;
+}
+
+.comments-write-section{
+    display: none;
+    background-color: #f0f8ff; /* очень светлый синий фон */
+    padding: 15px;
+    border-radius: 10px;
+    margin: 5px;
+}
+
+.comments-title {
+    font-weight: bold;
+    color: #1da1f2; /* синий цвет для заголовка блока комментариев */
+    margin-bottom: 10px;
+}
+
+.Comments-section-author-name{
+    color: gray;
+    margin-left: 65px;
+}
+
+.Comments-section-comment-text{
+    /* background-color: #f0f8ff; */
+    padding: 5px;
+    margin-top:30px ;
+    font-size: 0.9em;
+}
+
+.comments-author-avatar{
+    left: 0;
+    top: 0;
+    position: absolute;
+    width: 50px;
+    border-radius: 50%;
+}
+
+.comments-section{
+    position: relative;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.comment {
+    background-color: #ffffff; /* белый фон комментария */
+    padding: 10px;
+    position: relative;
+    border-radius: 8px;
+    margin-bottom: 10px;
+    color: #333333; /* темно-серый текст */
+}
+
+.Modal-CommentSubmitBtn{
+    position: absolute;
+    right: 0;
+    margin-right: 5%;
+    background-color: #1da1f2;
+    color: #ffffff;
+    width: 100px;
+    padding: 5px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.modal-commentInput{
+    width: 70%;
+    height: auto;
+    border: 2px solid gray;
+    border-radius: 5px;
 }

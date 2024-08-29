@@ -2,6 +2,8 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% load filters %}
+
     <title>User Profile</title>
     
     <meta charset="UTF-8">
@@ -9,7 +11,9 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'js/script.js'%}"></script>
     <script src="{% static 'js/Profile.js'%}"></script>
-    
+    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
+
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link href="{% static 'css/profile_page.css'%}" rel="stylesheet">     
     <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
 </head>
@@ -40,9 +44,20 @@
 
             <div class="tweets-section">
                 {% for post in posts %}
+                    <p>{{post.CheckTypeOfFile}}</p>
+
                     <div class="tweet post{{post.pk}}" onclick="OpenPostPopup({{post.pk}})">
                         <p>{{post.description}}</p>
-                        <img src="{{post.PostVidOrImg.url}}" alt="Tweet Image 1" class="tweet-image">
+                            {% if post.PostFile.url|typeOf  == 'mp4'%}
+                                <!-- Видеоплеер -->
+                                <video id="videoPlayer-{{ post.pk }}" class="plyr" playsinline controls>
+                                    <source class="plyrVideoPlayerSource" src="{% static 'PostData/2/video/Madara_Uchiha_-_Royalty_AMV_PXKtkqe.mp4' %}" type="video/mp4">
+
+                                </video>
+                            {% else %}
+                                <!-- Изображение -->
+                                <img src="{{ post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                            {% endif %}
                         <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>
                         <a class="Post_comment_icon" ><img src=" {% static 'icons/message-324.svg'%}"/><a/>
                         <span class="tweet-date">{{post.created}}</span>
@@ -56,7 +71,7 @@
 
     <!-- Модальное окно публикации нового поста -->
     <div id="ModalForNewPost" class="ModalForNewPost">
-        <div class="modal-content">
+        <div class="modal-content modal-for-new-post">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Новая публикация</h2>
             <div>
@@ -109,7 +124,13 @@
                     <button onclick="" class="tweet-follow-button"></button>
                 </div>
             </div>
-            <img src="" alt="Tweet Image 1" class="tweet-image">
+            <div class="PostFilePlayBlock">
+                <img src="" alt="Tweet Image 1" class="tweet-image">
+                <video  class="plyr plyrVideoPlayerSource" playsinline controls>
+                    <source class="plyrVideoPlayerSource" type="video/mp4"/>
+                </video>
+            </div>
+
             <a class="LikeIconCountTag" onclick="" ><img class="LikeIconPopup" src="" /></a>
             <a class="tweet-comment-link" onclick="" ><img class="tweet-comment-icon" src="" /></a>
             <p class="tweet-description"></p>
@@ -132,4 +153,8 @@
         </div>
      </div>
 </body>
+
+<script>
+
+    </script>
 </html>

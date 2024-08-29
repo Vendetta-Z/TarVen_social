@@ -1,5 +1,3 @@
-// Отправка лайка на сервер и изменения иконки лайка в зависимости от ответа
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -108,11 +106,22 @@ function OpenPostPopup(post_id){
             $('.tweet-follow-button').attr('onclick', userFollowingBtn[0]);
             $('.tweet-follow-button').text(userFollowingBtn[1]);
 
-            $('.tweet-image').attr('src', postData[0].fields.PostVidOrImg)
+            var fileType = (postData[0].fields.PostFile).split('.').pop();
+            if(fileType == 'mp4'){
+                $('.tweet-image').css('display', 'none');
+                $('.plyrVideoPlayerSource').attr('preload','auto')
+                $('.plyrVideoPlayerSource').html(`<source class="plyrVideoPlayerSource" src="${postData[0].fields.PostFile}"  type="video/mp4">`)
+                const players = Plyr.setup('.plyr');
+            }
+            else{
+                $('.plyr').css('display', 'none');
+                $('.tweet-image').attr('src', postData[0].fields.PostFile);
+            }
+
+            $('.tweet-image').attr('src', postData[0].fields.PostFile)
             $('.LikeIconCountTag').attr('onclick', `adding_like_for_post(${post_id})`)
-            $('.LikeIconPopup').html=`
-            `
-            attr('src', data.like_icon)
+            $('.LikeIconPopup').attr('src', data.like_icon)
+
             $('.tweet-comment-link').attr('onclick', `openCommentsPopup(${post_id})`)
             $('.tweet-comment-icon').attr('src', 'Config/static/icons/message-324.svg')
 
@@ -164,3 +173,4 @@ function save_post_to_favorite(post_id){
         }
     })
 }
+
