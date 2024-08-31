@@ -1,14 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
 {% load static %}
+{% load filters %}
 
 <head>
+    <title>Лента публикаций</title>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
     <script src="{% static 'js/script.js'%}"></script>
     <script src="{% static 'js/pubFeed.js'%}"></script>
-    <title>Лента публикаций</title>
+
+    <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link rel="stylesheet" href="{% static '\css\side_bar_menu.css' %}">
     <link rel="stylesheet" href="{% static '\css\pub_feed.css' %}">
 
@@ -19,7 +24,13 @@
         <div class="feed">
             {% for post in publication_list %}
             <div class="post" onclick="OpenPostPopup({{post.pk}})">
-                <img src="{{post.PostFile.url}}" alt="Публикация">
+                {% if post.PostFile.url|typeOf  == 'mp4'%}
+                    <!-- Видеоплеер -->
+                    <img src="{{ post.preview.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                {% else %}
+                    <!-- Изображение -->
+                    <img src="{{ post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                {% endif %}
                 <div class="icons">
                     <div class="icon like_in_pub_feed" onclick="adding_like_for_post({{post.pk}})">
                         <img src="{% static 'icons/heart.png'%}" alt="Лайк">
@@ -35,6 +46,7 @@
                 </div>
             </div>
             {% endfor %}
+
         </div>
     </div>
 
@@ -50,7 +62,13 @@
                     <button onclick="" class="tweet-follow-button"></button>
                 </div>
             </div>
-            <img src="" alt="Tweet Image 1" class="tweet-image">
+            <div class="PostFilePlayBlock">
+                <img src="" alt="Tweet Image 1" class="tweet-image">
+                <video  class="plyr plyrVideoPlayerSource" playsinline controls>
+                    <source class="plyrVideoPlayerSource" type="video/mp4"/>
+                </video>
+            </div>
+
             <a class="LikeIconCountTag" onclick="" ><img class="LikeIconPopup" src="" /></a>
             <a class="tweet-comment-link" onclick="" ><img class="tweet-comment-icon" src="" /></a>
             <p class="tweet-description"></p>

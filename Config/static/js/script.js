@@ -109,12 +109,15 @@ function OpenPostPopup(post_id){
             var fileType = (postData[0].fields.PostFile).split('.').pop();
             if(fileType == 'mp4'){
                 $('.tweet-image').css('display', 'none');
+                $('.plyr').css('display', 'block');
                 $('.plyrVideoPlayerSource').attr('preload','auto')
                 $('.plyrVideoPlayerSource').html(`<source class="plyrVideoPlayerSource" src="${postData[0].fields.PostFile}"  type="video/mp4">`)
-                const players = Plyr.setup('.plyr');
+                const players = Plyr.setup('.plyrVideoPlayerSource');
+
             }
             else{
                 $('.plyr').css('display', 'none');
+                $('.tweet-image').css('display', 'block');
                 $('.tweet-image').attr('src', postData[0].fields.PostFile);
             }
 

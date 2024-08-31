@@ -9,12 +9,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
     <script src="{% static 'js/script.js'%}"></script>
     <script src="{% static 'js/Profile.js'%}"></script>
-    <script src="https://cdn.plyr.io/3.7.8/plyr.js"></script>
 
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
-    <link href="{% static 'css/profile_page.css'%}" rel="stylesheet">     
+    <link href="{% static 'css/profile_page.css'%}" rel="stylesheet">
     <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
 </head>
 
@@ -44,16 +44,11 @@
 
             <div class="tweets-section">
                 {% for post in posts %}
-                    <p>{{post.CheckTypeOfFile}}</p>
-
                     <div class="tweet post{{post.pk}}" onclick="OpenPostPopup({{post.pk}})">
                         <p>{{post.description}}</p>
                             {% if post.PostFile.url|typeOf  == 'mp4'%}
                                 <!-- Видеоплеер -->
-                                <video id="videoPlayer-{{ post.pk }}" class="plyr" playsinline controls>
-                                    <source class="plyrVideoPlayerSource" src="{% static 'PostData/2/video/Madara_Uchiha_-_Royalty_AMV_PXKtkqe.mp4' %}" type="video/mp4">
-
-                                </video>
+                                <img src="{{ post.preview.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
                             {% else %}
                                 <!-- Изображение -->
                                 <img src="{{ post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
@@ -64,22 +59,6 @@
 
                     </div>
                 {% endfor %}
-            </div>
-        </div>
-    </div>
-
-
-    <!-- Модальное окно публикации нового поста -->
-    <div id="ModalForNewPost" class="ModalForNewPost">
-        <div class="modal-content modal-for-new-post">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <h2>Новая публикация</h2>
-            <div>
-                <label for="post_image_in_new_post_popup_id">Выберите фотографию:</label>
-                <input type="file" id="post_image_in_new_post_popup_id" name="photo" accept="image/*"><br><br>
-                <label for="description_textarea_for_new_post">Описание:</label>
-                <textarea id="description_textarea_for_new_post" name="description" rows="4" cols="50"></textarea><br><br>
-                <button  onclick="send_data_for_create_new_post()">Опубликовать</button>
             </div>
         </div>
     </div>
@@ -152,9 +131,37 @@
             <div class="comments-section"></div>
         </div>
      </div>
+
+
+    <div class="NewPostPopup" id="NewPostPopup">
+        <div class="SelectNewFileInput-div">
+            <label for="SelectNewFileInput">Выбрать файл</input></label>
+            <input onchange="attach(this)" type="file" id="SelectNewFileInput" class="SelectNewFileInput" />
+        </div>
+        <div class="PostInformationSelect-div">
+            <div class="PostFileInputDiv">
+                <label for="selectedFile" ><img class="LabelForSelectFile"/></label>
+                <input name="selectedFile" id="selectedFile" type="file"/>
+            </div>
+
+            <div>
+                <label for="TitleWriteInput" >Название</label>
+                <input class="TitleWriteInput" id="TitleWriteInput" type="text"/>
+            </div>
+
+            <div>
+                <label for="DescriptionWriteInput" > Описание</label>
+                <input class="DescriptionWriteInput" id="DescriptionWriteInput"/>
+            </div>
+
+            <div class="PreviewDiv">
+                <label for="PreviewInput" ><img class="PreviewInputStandartLabel" src="Config/static/image/default_avatar.png"/></label>
+                <input class="PreviewInput" onchange="ChangePreviewInput(this)" id="PreviewInput" type="file"/>
+            </div>
+
+            <button onclick="send_data_for_create_new_post()">Опубликовать</button>
+        </div>
+    </div>
+
 </body>
-
-<script>
-
-    </script>
 </html>

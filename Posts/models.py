@@ -23,14 +23,14 @@ class Posts(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=350)
     created = models.DateTimeField(auto_now=True)
-
+    title = models.CharField(max_length=350)
 
     imageTypesForPost = ['jpeg','jpg', 'png']
     videoTypesForPost = ['mp3', 'mp4']
     allTypesForPost = str(imageTypesForPost + videoTypesForPost)
     PostFile = models.FileField(upload_to=getUploadFileUrl,
                                 validators=[FileExtensionValidator(allowed_extensions=[allTypesForPost])])
-
+    preview = models.ImageField(upload_to=getUploadFileUrl)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 

@@ -526,3 +526,67 @@ body.modal-open {
     width:100%;
     height:auto;
 }
+
+
+/* Стили для окна публикации нового поста */
+.NewPostPopup{
+    width: 800px;
+    height: 730px;
+    background-color: rebeccapurple;
+    position: fixed;
+    top: 10%;
+    left: 15%;
+    display:none;
+}
+
+.SelectNewFileInput-div{
+    height: 100%;
+    width: 100%;
+    background-color: #1c8f4f;
+}
+.SelectNewFileInput{
+    width: 40%;
+    height: 5%;
+    background-color: red;
+    position: relative;
+    top: 45%;
+    left: 30%;
+    display: none;
+}
+.PostInformationSelect-div{
+    display:none;
+}
+.TitleWriteInput{
+    display: block;
+    width: 95%;
+    background-color: gray;
+    border: 1px solid #c3b8b8;
+    border-radius: 5px;
+}
+.DescriptionWriteInput{
+    width: 50%;
+    height: 20%;
+    display: block;
+    background-color: gray;
+    border: 1px solid gray;
+    border-radius: 5px;
+    margin: 5px;
+}
+.PreviewInput{
+    width: 13%;
+    height: 100px;
+    display: block;
+    background-color: gray;
+    margin: 10px;
+    display:none;
+}
+.LabelForSelectFile{
+    width:45%;
+}
+#selectedFile{
+    display:none;
+}
+.PreviewInputStandartLabel{
+    width: 240px;
+    height: 165px;
+}

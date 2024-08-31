@@ -31,9 +31,11 @@ class Posts_views:
         )
 
     def create_post(self):
-        postFileInRequest= self.FILES['postImage']
+        postFileInRequest= self.FILES['postFile']
+        postPreview= self.POST['postPreview']
         postDescription = self.POST.get('postDescription')
-        Post = Posts_services.create_new_post(self, postFileInRequest, postDescription)
+        postTitle = self.POST.get('postDescription')
+        Post = Posts_services.create_new_post(self, postFileInRequest, postDescription, postTitle, postPreview )
         return JsonResponse(Post, safe=False)
 
     def change_post_data(self):

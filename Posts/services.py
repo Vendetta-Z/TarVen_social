@@ -64,11 +64,13 @@ class Posts_services:
         post_list = Posts.objects.filter(author= post_autor)
         return serializers.serialize('json', post_list)
 
-    def create_new_post(self, postImage, postDescription):
+    def create_new_post(self, postFile, postDescription, postTitle, postPreview):
         Post = Posts(
             author=self.user,
-            PostFile=postImage,
-            description=postDescription
+            PostFile=postFile,
+            description=postDescription,
+            title=postTitle,
+            preview=postPreview
             )
         Post.save()
 
