@@ -2,8 +2,6 @@ from django.http import JsonResponse
 from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.models import User
-from .models import *
 
 from Users.services import Users_services
 from .models import User
@@ -17,12 +15,12 @@ class User_views:
         if self.user.is_authenticated is False:
             return render(self, 'authorization/login.html')
         
-        user_profile_data = Users_services.get_user_profile_data(self)
+        userProfileData = Users_services.getUserProfileData(self)
 
         return render(
             self,
                 'profile_page.html',
-                user_profile_data
+                userProfileData
             )
 
     def publication_feed(self):
@@ -32,10 +30,10 @@ class User_views:
         return render(self, 'publication_feed.html', { 'publication_list' : publication } )
 
     def get_user_profile(self, id):
-        user_by_id =  User.objects.get(id=id)
-        user_profile_data = Users_services.get_another_user_profile(self, user_by_id)
+        userById =  User.objects.get(id=id)
+        userProfileData = Users_services.getAnotherUserProfile(self, userById)
 
-        return render(self, 'another_user_profile.html', user_profile_data)
+        return render(self, 'another_user_profile.html', userProfileData)
 
     def change_user_data(self):
         if self.POST:
@@ -43,22 +41,22 @@ class User_views:
             
             if self.FILES:
                 requestFiles = self.FILES['avatar']
-            return Users_services.change_user_data(self, requestFiles)
+            return Users_services.changeUserData(self, requestFiles)
 
-    def get_user_subscribes(self):
-        subscribers = Users_services.get_user_subscribes_data(self)
+    def getUserSubscribes(self):
+        subscribers = Users_services.getUserSubscribesData(self)
         return render(self, 'user_subscribes.html', {'subscribes': subscribers})
 
     def subscribe(self):
         if self.POST:
-            user_id = self.POST.get('user_id')
-            Users_services.subscribe_user(self, user_id=user_id)
+            userId = self.POST.get('user_id')
+            Users_services.subscribeUser(self, user_id=userId)
             return JsonResponse('successfull subscribed!', safe=False)
 
     def unsubscribe(self):
         if self.POST:
-            following_user_id = self.POST.get('following_user_id')
-            return Users_services.unsubscribe_user(self, following_user_id)
+            followingUserId = self.POST.get('followingUserId')
+            return Users_services.unsubscribeUser(self, followingUserId)
         return redirect('/publication_feed')    
     # Define a view function for the home page
     def home(request):

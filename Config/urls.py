@@ -1,12 +1,12 @@
-
 from django.contrib import admin
 from django.urls import path
-from django.conf import settings
 
 from Posts.views import Posts_views
 from Users.views import User_views
 from Likes.views import LikeViews
 from Comments.views import CommentsViews
+
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', User_views.profile),
@@ -18,7 +18,7 @@ urlpatterns = [
     path('change_user_data', User_views.change_user_data),
     path('publication_feed', User_views.publication_feed),
     path('subscribe', User_views.subscribe, name='subscibe_to'),
-    path('user_subscribes', User_views.get_user_subscribes, name='user_subscribes'),
+    path('user_subscribes', User_views.getUserSubscribes, name='user_subscribes'),
     path('unsubscribe', User_views.unsubscribe, name='unsubscribe'),
 
     path('Comments/new_comment', CommentsViews.new_comment, name='add_comment'),
@@ -27,7 +27,7 @@ urlpatterns = [
 
     path('get_post', Posts_views.get_post, name='get_post'),
     path('Post/save_post', Posts_views.save_post_view, name='save_post'),
-    path('Post/show_saved_posts', Posts_views.show_saved_views),
+    path('show_saved_posts', Posts_views.show_saved_views),
     path('get_user_posts', Posts_views.get_user_posts, name='get_all_user_posts'),
     path('change_post_data', Posts_views.change_post_data, name='change_post_data'),
     path('create_new_post/', Posts_views.create_post, name='create_post'),

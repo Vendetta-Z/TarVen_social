@@ -5,7 +5,6 @@ from django.db import models
 from django.core.validators import FileExtensionValidator
 
 from typing import Any
-import cv2
 
 
 def getUploadFileUrl(instance, filename):
@@ -49,8 +48,8 @@ class Posts(models.Model):
 
 
 class Saved_post(models.Model):
-    user_saved_post = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    save_post = models.OneToOneField(Posts, unique=True,on_delete=models.CASCADE)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    post = models.OneToOneField(Posts, unique=True,on_delete=models.CASCADE)
     saved_time = models.DateTimeField(auto_now=True)
 
 

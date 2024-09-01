@@ -11,16 +11,7 @@ class comments_services:
         comm.save()
         return JsonResponse({
             'status_code': 200,
-            'author': comm.author.first_name,
+            'author': comm.author.username,
             'text': comm.text,
             'created': comm.created
         })
-    
-
-    # def getComments(post_id):
-    #     avatars = []
-    #     filteredComm = Comments.objects.filter(post = post_id)
-    #     for comm in filteredComm:
-    #         avatarFromCommAuthor = Comments.getAvatar(comm)
-
-    #     return filteredComm, avatars

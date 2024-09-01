@@ -108,6 +108,7 @@ function openPostEditPopup(post_id){
 
 function openNewPostPopup(){
     $('.NewPostPopup').css('display', 'block');
+
 }
 
 function sendDataToChangeProfile(){

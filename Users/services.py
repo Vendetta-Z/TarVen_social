@@ -1,14 +1,13 @@
 from django.http import JsonResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect
 from django.contrib.auth import login
 
 from .models import User, UserFollowing
 from Posts.models import Posts
-from Comments.views import CommentsViews
 
 class Users_services:   
 
-    def Check_user_exist_and_login(self, username, password):
+    def CheckUserExistAndLogin(self, username, password):
 
             user = User.objects.get(username=username, password=password)
             if user:
@@ -17,23 +16,23 @@ class Users_services:
             else:
                 return JsonResponse({'response': 404, 'message': 'Такой пользователь не найден'})
 
-    def get_user_profile_data(self):
-        user_subscribers = UserFollowing.objects.filter(following_user=self.user)
-        user_subscribes = UserFollowing.objects.filter(user_id=self.user)
+    def getUserProfileData(self):
+        userSubscribers = UserFollowing.objects.filter(following_user=self.user)
+        userSubscribes = UserFollowing.objects.filter(user_id=self.user)
         postWithoutVideo = Posts.objects.filter(author=self.user)
         
         return {
             'user': self.user,
-            'subscribes': len(user_subscribes),
-            'subscribers': len(user_subscribers),
+            'subscribes': len(userSubscribes),
+            'subscribers': len(userSubscribers),
             'posts': postWithoutVideo,
         }
 
-    def change_user_data(self, requestFiles):
-        new_data_for_user = self.POST
+    def changeUserData(self, requestFiles):
+        newDataForUser = self.POST
         user = User.objects.get(id=self.user.id)
-        for data in new_data_for_user:
-            user.__dict__[data] = new_data_for_user[data]
+        for data in newDataForUser:
+            user.__dict__[data] = newDataForUser[data]
         user.avatar = self.user.avatar
 
         if requestFiles:
@@ -43,31 +42,31 @@ class Users_services:
 
         return redirect('/')
 
-    def get_another_user_profile(self, user):
-        user_subscribers = UserFollowing.objects.filter(following_user=user)
-        user_subscribes = UserFollowing.objects.filter(user_id=user.id)
+    def getAnotherUserProfile(self, user):
+        userSubscribers = UserFollowing.objects.filter(following_user=user)
+        userSubscribes = UserFollowing.objects.filter(user_id=user.id)
 
         return {
             'user': user,
-            'subscribes': len(user_subscribes),
-            'subscribers': len(user_subscribers),
+            'subscribes': len(userSubscribes),
+            'subscribers': len(userSubscribers),
             'posts': Posts.objects.filter(author=user).order_by('-created')
         }
     
-    def subscribe_user(self, user_id):
-        subscribed_to_user = User.objects.get(id=user_id)
-        if UserFollowing.objects.filter(user_id=self.user, following_user=subscribed_to_user):
+    def subscribeUser(self, user_id):
+        subscribedToUser = User.objects.get(id=user_id)
+        if UserFollowing.objects.filter(user_id=self.user, following_user=subscribedToUser):
             return JsonResponse('200', safe=False)
         else:
             newFollowingUser = UserFollowing(
                 user_id=self.user,
-                following_user=subscribed_to_user,
+                following_user=subscribedToUser,
             )
             newFollowingUser.save()
 
-    def unsubscribe_user(self, following_user_id):
-        UserFollowing.unsubscribe(self, following_user_id)
+    def unsubscribeUser(self, followingUserId):
+        UserFollowing.unsubscribe(self, followingUserId)
         return JsonResponse({'status_code':200})
 
-    def get_user_subscribes_data(self):
+    def getUserSubscribesData(self):
         UserFollowing.objects.filter(user_id=self.user)

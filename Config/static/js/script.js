@@ -1,3 +1,25 @@
+// Закрытие модального окна при клике вне его
+window.onclick = function(event) {
+    var modal = document.getElementById('modal');
+
+    if ( event.target === modal) {
+        modal.style.display = 'none';
+        $('.comments-section').empty();
+
+    }
+}
+
+document.addEventListener('keydown', function (e) {
+    var modal = document.getElementById('modal');
+
+    if(e.key === 'Escape'){
+        modal.style.display = 'none';
+        $('.comments-section').empty()
+        $('.comments-modal').css('display', 'none');
+    }
+})
+
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -69,11 +91,12 @@ function add_comment(post_id){
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         method:'POST',
         success:function(data){
+            console.log(data)
             $('.comments-section').append(`
             <div>
                 <img class="comments-author-avatar" />
-                <p class="Comments-section-author-name">${ comments[comment].author }</p>
-                <p class="Comments-section-comment-text">${ comments[comment].text }</p>
+                <p class="Comments-section-author-name">${ data['author'] }</p>
+                <p class="Comments-section-comment-text">${ data['text'] }</p>
             </div>
             `)
         }
@@ -90,7 +113,7 @@ function OpenPostPopup(post_id){
             postData = JSON.parse(data['post']);
             author = JSON.parse(data['author']);
             comments = data['comments']
-            
+            isSaved = data['isSaved']
             userFollowingBtn = [`subscribe_to_user(${author[0].pk})`, 'Подписаться']
             if(data.self_user_follow_author == 1){
                 userFollowingBtn = [`unsubscribe_user(${author[0].pk})`,'Отписаться']
@@ -126,7 +149,14 @@ function OpenPostPopup(post_id){
             $('.LikeIconPopup').attr('src', data.like_icon)
 
             $('.tweet-comment-link').attr('onclick', `openCommentsPopup(${post_id})`)
-            $('.tweet-comment-icon').attr('src', 'Config/static/icons/message-324.svg')
+
+            $('.tweet-favorite-link').attr('onclick', `save_post_to_favorite(${post_id})`)
+            if(isSaved === 0){
+                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/save-instagram-black-lineal-18315.svg');
+            }
+            else{
+                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/black-save-instagram-18316.svg');
+            }
 
             $('.tweet-description').text(postData[0].fields.description)
             $('.tweet-date').text(postData[0].fields.created)
@@ -171,7 +201,10 @@ function save_post_to_favorite(post_id){
         method:'POST',
         success:function(data){
             if(data['post_status'] === 'removed'){
-                $('.saved_post_id_'+ post_id).remove();
+                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/save-instagram-black-lineal-18315.svg');
+            }
+            else{
+                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/black-save-instagram-18316.svg');
             }
         }
     })

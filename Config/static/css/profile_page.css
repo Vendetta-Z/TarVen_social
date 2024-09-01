@@ -97,7 +97,15 @@ body {
 }
 
 .follow-btn {
-    background-color: #1da1f2;
+    width: 110px;
+    background-color: #024e7d;
+    color: #fff;
+    border: none;
+    padding: 5px 5px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-right: 10px;
 }
 
 .tweets-section {
@@ -405,6 +413,11 @@ body.modal-open {
 }
 
 .tweet-comment-icon{
+    width: 30px;
+    margin-left: 5px;
+}
+
+.tweet-favorite-icon{
     width: 30px;
     margin-left: 5px;
 }

@@ -1,5 +1,3 @@
-import os.path
-
 from django.http import JsonResponse
 from django.core import serializers
 
@@ -15,15 +13,19 @@ from Users.models import UserFollowing
 
 class Posts_services:
 
-    def get_post_data(self, post_id):
+    def getPostData(self, post_id):
         post = Posts.objects.get(id=post_id)
         post_likes_len = len(Like.objects.filter(product=post))
+        post_comments = Comments.objects.filter(post=post).order_by('-created')
+        isSaved = 0
+        if Saved_post.objects.filter(user=self.user , post=post).exists():
+            isSaved = 1
+
 
         like_icon = "Config/static/icons/heart.png"
         if Like.check_user_liked(self, user=self.user, post=post):
             like_icon = "Config/static/icons/red_heart.png"
 
-        post_comments = Comments.objects.filter(post=post).order_by('-created')
         schema = CommentsSchema(many=True)
         json_post_comments = schema.dump(post_comments)
 
@@ -39,32 +41,33 @@ class Posts_services:
             'Likes':post_likes_len,
             'like_icon': like_icon,
             'comments': json_post_comments,
-            'self_user_follow_author': self_user_follow_author
+            'self_user_follow_author': self_user_follow_author,
+            'isSaved': isSaved
         }
 
-    def save_post_to_favorite(self, post_id):
+    def savePostToFavorite(self, post_id):
         post = Posts.objects.get(id=post_id)
-
-        if Saved_post.objects.filter(save_post = post).exists():
-            Saved_post.objects.get(user_saved_post = self.user, save_post = post).delete()
+        if Saved_post.objects.filter(post = post).exists():
+            Saved_post.objects.get(user = self.user, post = post).delete()
             return JsonResponse({'post_status': 'removed'}, safe=False)
         else:
-            Save_post = Saved_post(
-                user_saved_post = self.user,
-                save_post = post
+
+            save_post = Saved_post(
+                user = self.user,
+                post = post
                 )
-            Save_post.save()
+            save_post.save()
             return JsonResponse({'post_status': 'saved'}, safe=False)
 
-    def get_user_saved_posts(self):
+    def getUserSavedPosts(self):
         
-        return Saved_post.objects.filter(user_saved_post=self.user)
+        return Saved_post.objects.filter(user=self.user)
 
-    def get_user_posts(self, post_autor):
+    def getUserPosts(self, post_autor):
         post_list = Posts.objects.filter(author= post_autor)
         return serializers.serialize('json', post_list)
 
-    def create_new_post(self, postFile, postDescription, postTitle, postPreview):
+    def createNewPost(self, postFile, postDescription, postTitle, postPreview):
         Post = Posts(
             author=self.user,
             PostFile=postFile,
@@ -76,7 +79,7 @@ class Posts_services:
 
         return serializers.serialize('json', [Post])
 
-    def change_post_data(Request_POST, request_FILES):
+    def changePostData(Request_POST, request_FILES):
         post_by_id = Posts.objects.get(id=Request_POST['id'])
         if request_FILES:
             post_by_id.PostFile = request_FILES
@@ -84,5 +87,5 @@ class Posts_services:
         post_by_id.save()
         return JsonResponse('200' , safe=False)
 
-    def delete_post(self, post_id):
+    def deletePost(self, post_id):
         Posts.objects.filter(author=self.user, id=post_id).delete()

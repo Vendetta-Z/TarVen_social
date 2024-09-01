@@ -77,34 +77,11 @@ body {
     left: 10%;
     background-color: #fff;
     padding: 20px;
-    width: 100%;
+    width: 80%;
     max-height: 80%;
     overflow-y: auto; /* Прокрутка только внутри модального окна */
     border-radius: 10px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-}
-
-
-.CoverPostPopupInPubFeed{
-    display: none;
-    width: 100%;
-    height: 100%;
-    background-color:  rgba(0, 0, 0, 0.4);
-    position: fixed;
-    top: 0;
-    left: 0;
-}
-
-
-.postsBlockInPopup{
-    position: fixed;
-    background-color: #fff;
-    width: 80%;
-    height: 90%;
-    top: 5%;
-    left: 10%;
-    border: 2px solid #aaa;
-    border-radius: 20px ;
 }
 
 .tweet-image {
@@ -147,11 +124,13 @@ body {
     font-size: 14px;
     margin-top: 5px;
 }
-.tweet-follow-button:hover{
-    cursor: pointer;
+
+.tweet-comment-icon{
+    width: 30px;
+    margin-left: 5px;
 }
 
-.tweet-comment-icon {
+.tweet-favorite-icon{
     width: 30px;
     margin-left: 5px;
 }
@@ -172,36 +151,11 @@ body {
     display: block;
 }
 
-.comments-section {
-    background-color: #f0f8ff; /* очень светлый синий фон */
-    padding: 15px;
-    border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* легкая тень */
-}
-
-.comments-title {
-    font-weight: bold;
-    color: #1da1f2; /* синий цвет для заголовка блока комментариев */
-    margin-bottom: 10px;
-}
-
-.comment {
-    background-color: #ffffff; /* белый фон комментария */
-    padding: 10px;
-    border-radius: 8px;
-    margin-bottom: 10px;
-    color: #333333; /* темно-серый текст */
-}
-
-.comments-soon {
-    font-size: 14px;
-    color: #8899a6; /* светло-серый текст для текста "СКОРО..." */
-    text-align: center;
-}
 
 .LikeIconPopup{
     width: 30px;
 }
+
 
 
 /* Модальное окно с комментариями  */

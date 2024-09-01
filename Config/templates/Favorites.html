@@ -11,7 +11,6 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
     <script src="{% static 'js/script.js'%}"></script>
-    <script src="{% static 'js/pubFeed.js'%}"></script>
 
     <link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
     <link rel="stylesheet" href="{% static '\css\side_bar_menu.css' %}">
@@ -22,15 +21,28 @@
     <div class="container">
         {% include "side_bar_menu.html" %}
         <div class="feed">
-            {% for post in publication_list %}
-            <div class="post" onclick="OpenPostPopup({{post.pk}})">
-                {% if post.PostFile.url|typeOf  == 'mp4'%}
+            {% for s in saved_posts %}
+            <div class="post" onclick="OpenPostPopup({{s.post.pk}})">
+                {% if s.post.PostFile.url|typeOf  == 'mp4'%}
                     <!-- Видеоплеер -->
-                    <img src="{{ post.preview.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                    <img src="{{ s.post.preview.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
                 {% else %}
                     <!-- Изображение -->
-                    <img src="{{ post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                    <img src="{{ s.post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
                 {% endif %}
+                <div class="icons">
+                    <div class="icon like_in_pub_feed" onclick="adding_like_for_post({{post.pk}})">
+                        <img src="{% static 'icons/heart.png'%}" alt="Лайк">
+                        <span>123</span>
+                    </div>
+                    <div class="icon">
+                        <img  onclick="adding_like_for_post({{s.post.pk}})" src="{% static 'icons/message-324.svg'%}" alt="Комментарии">
+                        <span>45</span>
+                    </div>
+                    <div class="icon">
+                        <img src="save-icon.png" alt="Сохранить">
+                    </div>
+                </div>
             </div>
             {% endfor %}
 
@@ -61,11 +73,10 @@
             <a class="tweet-favorite-link" ><img class="tweet-favorite-icon" src="Config/static/icons/save-instagram-black-lineal-18315.svg" /></a>
 
             <p class="tweet-description"></p>
-            <span class="tweet-date"></span> 
+            <span class="tweet-date"></span>
             <button  class="modalChangePostBtn">edit post Publication</button>
         </div>
     </div>
-    
     <!-- Модальное окно с комментариями -->
     <div class="comments-modal">
         <div class="comments-write-section">
