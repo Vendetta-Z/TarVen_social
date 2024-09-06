@@ -1,10 +1,13 @@
 from django.contrib import admin
 from django.urls import path
+from django.conf.urls.static import static
+from django.conf import settings
 
 from Posts.views import Posts_views
 from Users.views import User_views
 from Likes.views import LikeViews
 from Comments.views import CommentsViews
+from Tmusic.views import MusicViews
 
 
 urlpatterns = [
@@ -24,6 +27,10 @@ urlpatterns = [
     path('Comments/new_comment', CommentsViews.new_comment, name='add_comment'),
     # path('Comments/get_comments', CommentsViews.getComments, name='get_comments'),
 
+    path('Music/create', MusicViews.create, name='create a music'),
+    path('Music/get', MusicViews.get, name='get music'),
+    path('Music/getAll', MusicViews.getAll, name='get all musics'),
+    path('Music/delete', MusicViews.delete, name='get all musics'),
 
     path('get_post', Posts_views.get_post, name='get_post'),
     path('Post/save_post', Posts_views.save_post_view, name='save_post'),
@@ -35,3 +42,4 @@ urlpatterns = [
 
     path('Like/add_like', LikeViews.add_like, name='Add like')
 ]
+urlpatterns += static(settings.MMEDIA_URL, document_root=settings.MMEDIA_ROOT)

@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
 
-
+    'Tmusic',
     'Comments',
     'Likes',
     'Users',
@@ -96,9 +96,13 @@ USE_I18N = True
 
 USE_TZ = True
 
+
 STATIC_URL = 'Config/static/'
 STATICFILES_DIRS = [
-    BASE_DIR / "Config/static"
+    os.path.join(BASE_DIR, 'Config/static'),
 ]
+
+MMEDIA_ROOT = os.path.join(BASE_DIR, 'Tmusic/musics')
+MMEDIA_URL = 'Tmusic/musics/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'

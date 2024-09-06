@@ -1,0 +1,29 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    display: flex;
+}
+
+.modal{
+    position:relative;
+    left:300px;
+    width: 710px;
+    height: 90px;
+    background-color: gray;
+    border: 1px solid #373434;
+    border-radius: 5px;
+}
+.modal-content{
+    display: inline-block;
+    margin: 5px;
+}
+.Playlist{
+    position: absolute;
+    left: 310px;
+    top: 120px;
+}
