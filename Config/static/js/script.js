@@ -56,6 +56,14 @@ function adding_like_for_post(post_id){
     })
 }
 
+function adding_like_for_post(post_id){
+    fetch('/my-ajax-url/')
+      .then(response => response.json())  // Обработка ответа...
+      .then(data => {
+    // Применение данных в вашем интерактивном сценарии 💃
+  });
+}
+
 function subscribe_to_user(user_id){
     $.ajax({
         url:'subscribe',
@@ -128,6 +136,10 @@ function OpenPostPopup(post_id){
             $('.tweet-author-name').text(author[0].fields.username);
             $('.tweet-follow-button').attr('onclick', userFollowingBtn[0]);
             $('.tweet-follow-button').text(userFollowingBtn[1]);
+
+            const a = '{{posts}}'
+            console.log(a)
+
 
             var fileType = (postData[0].fields.PostFile).split('.').pop();
             if(fileType == 'mp4'){
@@ -209,4 +221,3 @@ function save_post_to_favorite(post_id){
         }
     })
 }
-

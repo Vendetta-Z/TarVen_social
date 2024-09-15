@@ -19,13 +19,13 @@ class Users_services:
     def getUserProfileData(self):
         userSubscribers = UserFollowing.objects.filter(following_user=self.user)
         userSubscribes = UserFollowing.objects.filter(user_id=self.user)
-        postWithoutVideo = Posts.objects.filter(author=self.user)
-        
+        posts = Posts.objects.filter(author=self.user)
+
         return {
             'user': self.user,
             'subscribes': len(userSubscribes),
             'subscribers': len(userSubscribers),
-            'posts': postWithoutVideo,
+            'posts': posts,
         }
 
     def changeUserData(self, requestFiles):
@@ -68,5 +68,5 @@ class Users_services:
         UserFollowing.unsubscribe(self, followingUserId)
         return JsonResponse({'status_code':200})
 
-    def getUserSubscribesData(self):
-        UserFollowing.objects.filter(user_id=self.user)
+    # def getUserSubscribesData(self):
+    #     UserFollowing.objects.filter(user_id=self.user)

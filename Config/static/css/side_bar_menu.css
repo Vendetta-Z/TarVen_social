@@ -5,6 +5,8 @@
     padding: 20px;
     height: 100vh;
     position: fixed;
+    top: 0;
+    left: 0;
 }
 
 .sidebar h2 {
@@ -34,3 +36,12 @@
     border-radius: 4px;
     transition: background 0.3s;
 }
+
+.audio_player{
+    width: 263px;
+    height: 38px;
+    border: 1px solid white;
+    border-radius: 6px;
+    background-color: white;
+}
+

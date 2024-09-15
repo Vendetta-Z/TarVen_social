@@ -14,12 +14,8 @@ class CustomDateTimeField(models.DateTimeField):
 class Comments(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     post = models.ForeignKey(Posts, on_delete=models.CASCADE)
-    text = models.CharField(max_length=500)
+    text = models.CharField(max_length=500, verbose_name='Comment text')
     created = CustomDateTimeField(auto_now_add=True)
     
     class META:
         fields = ['author',  'post', 'text', 'created']
-
-    def getAvatar(self):
-        return self.author.avatar.url if self.author.avatar else None
-    

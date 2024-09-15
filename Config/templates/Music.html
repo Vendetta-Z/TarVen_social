@@ -6,8 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{% static 'css/Music.css'%}">
     <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
+    <link href="{% static 'css/songPlayer.css'%}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+
+    <script src="https://kit.fontawesome.com/a062562745.js" crossorigin="anonymous"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'js/music.js'%}"></script>
+
+
 
     <title>Document</title>
 </head>
@@ -28,16 +34,17 @@
     </div>
     <div class="Playlist">
         {% for m in music %}
-            <div class="music_{{m.pk}}">
-                <a>Автор:{{m.author}} </a></br>
-                <audio controls >
-                    <source src="{{m.file.url}}">
+        <!--  Исправить аудио плеер в блоке песен      -->
+        <audio id="myAudio" onclick="toggleAudio()" controls ontimeupdate="onTimeUpdate()">
+            <source id="source-audio" src="{{m.file.url}}" type="audio/mp3">
+        </audio>
 
-                </audio><img onclick="deleteMusic({{m.pk}})" width="20px" src="{% static 'icons/free-icon-bin-484662.png' %}"></br></br>
-            </div>
+
+    </div>
 
 
         {% endfor %}
     </div>
+    <script src="{% static 'js/songPlayer.js'%}"></script>
 
 </div>
