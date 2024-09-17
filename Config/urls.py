@@ -30,6 +30,7 @@ urlpatterns = [
     path('Music/create', MusicViews.create, name='create a music'),
     path('Music/get', MusicViews.get, name='get music'),
     path('Music/getAll', MusicViews.getAll, name='get all musics'),
+    path('Music/index', MusicViews.index, name='get all musics'),
     path('Music/delete', MusicViews.delete, name='get all musics'),
 
     path('get_post', Posts_views.get_post, name='get_post'),

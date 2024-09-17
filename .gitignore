@@ -8,6 +8,7 @@ media
 
 # Media project Files#
 Config/static/PostData/
+Tmusic/musics/
 
 # Backup files # 
 *.bak 

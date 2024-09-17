@@ -1,232 +1,168 @@
-  function createTrackItem(index,name,duration){
-    var trackItem = document.createElement('div');
-    trackItem.setAttribute("class", "playlist-track-ctn");
-    trackItem.setAttribute("id", "ptc-"+index);
-    trackItem.setAttribute("data-index", index);
-    document.querySelector(".playlist-ctn").appendChild(trackItem);
+let audioPlayer = document.getElementById('audio-player');
+let playBtn = document.getElementById('play-btn');
+let pauseBtn = document.getElementById('pause-btn');
+let nextBtn = document.getElementById('next-btn');
+let prevBtn = document.getElementById('prev-btn');
+let shuffleBtn = document.getElementById('shuffle-btn');
+let repeatBtn = document.getElementById('repeat-btn');
+let progressBar = document.getElementById('progress');
+let currentTimeElem = document.getElementById('current-time');
+let durationElem = document.getElementById('duration');
+let trackTitle = document.getElementById('track-title');
 
-    var playBtnItem = document.createElement('div');
-    playBtnItem.setAttribute("class", "playlist-btn-play");
-    playBtnItem.setAttribute("id", "pbp-"+index);
-    document.querySelector("#ptc-"+index).appendChild(playBtnItem);
+let playList = document.getElementById('Music_Playlist');
 
-    var btnImg = document.createElement('i');
-    btnImg.setAttribute("class", "fas fa-play");
-    btnImg.setAttribute("height", "40");
-    btnImg.setAttribute("width", "40");
-    btnImg.setAttribute("id", "p-img-"+index);
-    document.querySelector("#pbp-"+index).appendChild(btnImg);
+let volumeSlider = document.getElementById('volume-slider');
+let muteBtn = document.getElementById('mute-btn');
 
-    var trackInfoItem = document.createElement('div');
-    trackInfoItem.setAttribute("class", "playlist-info-track");
-    trackInfoItem.innerHTML = name
-    document.querySelector("#ptc-"+index).appendChild(trackInfoItem);
+let tracks = [];  // Плейлист пользователя
+let currentTrackIndex = 0;
+let isShuffle = false;
+let isRepeat = false;
+let isMuted = false;
 
-    var trackDurationItem = document.createElement('div');
-    trackDurationItem.setAttribute("class", "playlist-duration");
-    trackDurationItem.innerHTML = duration
-    document.querySelector("#ptc-"+index).appendChild(trackDurationItem);
-  }
-
-  var listAudio = [
-    {
-      name:"Artist 1 - audio 1",
-      file:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-10.mp3",
-      duration:"08:47"
-    },
-    {
-      name:"Artist 2 - audio 2",
-      file:"https://www.soundhelix.com/examples/mp3/SoundHelix-Song-5.mp3",
-      duration:"05:53"
-    },
-    {
-      name:"Artist 3 - audio 3",
-      file:"https://file-examples.com/wp-content/uploads/2017/11/file_example_MP3_1MG.mp3",
-      duration:"00:27"
-    }
-  ]
-
-  for (var i = 0; i < listAudio.length; i++) {
-      createTrackItem(i,listAudio[i].name,listAudio[i].duration);
-  }
-  var indexAudio = 0;
-
-  function loadNewTrack(index){
-    var player = document.querySelector('#source-audio')
-    player.src = listAudio[index].file
-    document.querySelector('.title').innerHTML = listAudio[index].name
-    this.currentAudio = document.getElementById("myAudio");
-    this.currentAudio.load()
-    this.toggleAudio()
-    this.updateStylePlaylist(this.indexAudio,index)
-    this.indexAudio = index;
-  }
-
-  var playListItems = document.querySelectorAll(".playlist-track-ctn");
-
-  for (let i = 0; i < playListItems.length; i++){
-    playListItems[i].addEventListener("click", getClickedElement.bind(this));
-  }
-
-  function getClickedElement(event) {
-    for (let i = 0; i < playListItems.length; i++){
-      if(playListItems[i] == event.target){
-        var clickedIndex = event.target.getAttribute("data-index")
-        if (clickedIndex == this.indexAudio ) { // alert('Same audio');
-            this.toggleAudio()
-        }else{
-            loadNewTrack(clickedIndex);
+// Асинхронная загрузка плейлиста
+async function loadPlaylist() {
+    try {
+        let response = await fetch('/Music/getAll', {
+            method: 'GET',
+            headers: { 'X-CSRFToken': getCookie('csrftoken') }
+        });
+        if (response.ok) {
+            let data = await response.json();
+            let data_json = JSON.parse(data);
+            tracks = data_json.map(track => ({
+                title: track.fields.title,
+                file: '/' + track.fields.file,
+                id: track.pk
+            }));
+            for (var i = 0; i < tracks.length; i++){
+                playList.innerHTML += `
+                    <div id="track_id${tracks[i].id}" style="background-color: gray; border: 1px solid #1c1c1c; border-radius: 3px;">
+                        <p style="display:inline-block;">${tracks[i].title}</p>
+                        <a>1:23</a>
+                        <button onclick=(playTrack(${i})) id="play-btn" style="display: inline;">Play</button>
+                        <button onclick=(deleteMusic(${tracks[i].id}))>delete</button>
+                    </div>
+                `
+            }
         }
-      }
+    } catch (error) {
+        console.error('Ошибка загрузки плейлиста:', error);
     }
-  }
+}
 
-  document.querySelector('#source-audio').src = listAudio[indexAudio].file
-  document.querySelector('.title').innerHTML = listAudio[indexAudio].name
+// Воспроизведение трека по индексу
+function playTrack(index) {
+    if (tracks.length === 0) return;
 
+    currentTrackIndex = index;
+    let track = tracks[index];
+    audioPlayer.src = track.file;
+    trackTitle.innerHTML = track.title;
+    audioPlayer.play();
 
-  var currentAudio = document.getElementById("myAudio");
+    playBtn.style.display = 'none';
+    pauseBtn.style.display = 'inline';
 
-  currentAudio.load()
-  
-  currentAudio.onloadedmetadata = function() {
-        document.getElementsByClassName('duration')[0].innerHTML = this.getMinutes(this.currentAudio.duration)
-  }.bind(this);
+    audioPlayer.onloadedmetadata = function() {
+        progressBar.max = audioPlayer.duration;
+        durationElem.textContent = formatTime(audioPlayer.duration);
+    };
+}
 
-  var interval1;
+// Форматирование времени трека
+function formatTime(seconds) {
+    let mins = Math.floor(seconds / 60);
+    let secs = Math.floor(seconds % 60);
+    return `${mins}:${secs < 10 ? '0' : ''}${secs}`;
+}
 
-  function toggleAudio() {
-    console.log(currentAudio)
-    if (this.currentAudio.paused) {
-      document.querySelector('#icon-play').style.display = 'none';
-      document.querySelector('#icon-pause').style.display = 'block';
-      document.querySelector('#ptc-'+this.indexAudio).classList.add("active-track");
-      this.playToPause(this.indexAudio)
-      this.currentAudio.play();
-    }else{
-      document.querySelector('#icon-play').style.display = 'block';
-      document.querySelector('#icon-pause').style.display = 'none';
-      this.pauseToPlay(this.indexAudio)
-      this.currentAudio.pause();
+// Обновление прогресс-бара
+audioPlayer.ontimeupdate = function() {
+    progressBar.value = audioPlayer.currentTime;
+    currentTimeElem.textContent = formatTime(audioPlayer.currentTime);
+};
+
+// Перемотка трека
+progressBar.oninput = function() {
+    audioPlayer.currentTime = progressBar.value;
+};
+
+// Переключение треков
+nextBtn.onclick = function() {
+    if (isShuffle) {
+        playTrack(Math.floor(Math.random() * tracks.length));
+    } else {
+        if (currentTrackIndex < tracks.length - 1) {
+            playTrack(currentTrackIndex + 1);
+        }
+        else{
+            currentTrackIndex = 0;
+            playTrack(currentTrackIndex);
+        }
     }
-  }
+};
 
-  function pauseAudio() {
-    this.currentAudio.pause();
-    clearInterval(interval1);
-  }
-
-  var timer = document.getElementsByClassName('timer')[0]
-
-  var barProgress = document.getElementById("myBar");
-
-
-  var width = 0;
-
-  function onTimeUpdate() {
-    var t = this.currentAudio.currentTime
-    timer.innerHTML = this.getMinutes(t);
-    this.setBarProgress();
-    if (this.currentAudio.ended) {
-      document.querySelector('#icon-play').style.display = 'block';
-      document.querySelector('#icon-pause').style.display = 'none';
-      this.pauseToPlay(this.indexAudio)
-      if (this.indexAudio < listAudio.length-1) {
-          var index = parseInt(this.indexAudio)+1
-          this.loadNewTrack(index)
-      }
+prevBtn.onclick = function() {
+    if (currentTrackIndex > 0) {
+        playTrack(currentTrackIndex - 1);
     }
-  }
+};
 
+// Плей/Пауза
+playBtn.onclick = function() {
+    audioPlayer.play();
+    playBtn.style.display = 'none';
+    pauseBtn.style.display = 'inline';
+};
 
-  function setBarProgress(){
-    var progress = (this.currentAudio.currentTime/this.currentAudio.duration)*100;
-    document.getElementById("myBar").style.width = progress + "%";
-  }
+pauseBtn.onclick = function() {
+    audioPlayer.pause();
+    playBtn.style.display = 'inline';
+    pauseBtn.style.display = 'none';
+};
 
+// Режим повторения
+repeatBtn.onclick = function() {
+    isRepeat = !isRepeat;
+    repeatBtn.classList.toggle('active');
+};
 
-  function getMinutes(t){
-    var min = parseInt(parseInt(t)/60);
-    var sec = parseInt(t%60);
-    if (sec < 10) {
-      sec = "0"+sec
+// Рандомный выбор трека
+shuffleBtn.onclick = function() {
+    isShuffle = !isShuffle;
+    shuffleBtn.classList.toggle('active');
+};
+
+// Регулятор громкости
+volumeSlider.oninput = function() {
+    audioPlayer.volume = volumeSlider.value;
+};
+
+// Запускаем загрузку плейлиста при загрузке страницы
+document.addEventListener('DOMContentLoaded', loadPlaylist);
+
+// При окончании трека
+audioPlayer.onended = function() {
+    if (isRepeat) {
+        playTrack(currentTrackIndex);
+    } else if (isShuffle) {
+        playTrack(Math.floor(Math.random() * tracks.length));
+    } else if (currentTrackIndex < tracks.length - 1) {
+        playTrack(currentTrackIndex + 1);
     }
-    if (min < 10) {
-      min = "0"+min
+};
+
+muteBtn.onclick = function() {
+    isMuted = !isMuted;
+    if(isMuted){
+        muteBtn.classList.toggle('active');
+        audioPlayer.volume = 0;
     }
-    return min+":"+sec
-  }
-
-  var progressbar = document.querySelector('#myProgress')
-  progressbar.addEventListener("click", seek.bind(this));
-
-
-  function seek(event) {
-    var percent = event.offsetX / progressbar.offsetWidth;
-    this.currentAudio.currentTime = percent * this.currentAudio.duration;
-    barProgress.style.width = percent*100 + "%";
-  }
-
-  function forward(){
-    this.currentAudio.currentTime = this.currentAudio.currentTime + 5
-    this.setBarProgress();
-  }
-
-  function rewind(){
-    this.currentAudio.currentTime = this.currentAudio.currentTime - 5
-    this.setBarProgress();
-  }
-
-
-  function next(){
-    if (this.indexAudio <listAudio.length-1) {
-        var oldIndex = this.indexAudio
-        this.indexAudio++;
-        updateStylePlaylist(oldIndex,this.indexAudio)
-        this.loadNewTrack(this.indexAudio);
+    else{
+        muteBtn.classList.toggle('-mute');
+        audioPlayer.volume = volumeSlider.value;0;
     }
-  }
 
-  function previous(){
-    if (this.indexAudio>0) {
-        var oldIndex = this.indexAudio
-        this.indexAudio--;
-        updateStylePlaylist(oldIndex,this.indexAudio)
-        this.loadNewTrack(this.indexAudio);
-    }
-  }
-
-  function updateStylePlaylist(oldIndex,newIndex){
-    document.querySelector('#ptc-'+oldIndex).classList.remove("active-track");
-    this.pauseToPlay(oldIndex);
-    document.querySelector('#ptc-'+newIndex).classList.add("active-track");
-    this.playToPause(newIndex)
-  }
-
-  function playToPause(index){
-    var ele = document.querySelector('#p-img-'+index)
-    ele.classList.remove("fa-play");
-    ele.classList.add("fa-pause");
-  }
-
-  function pauseToPlay(index){
-    var ele = document.querySelector('#p-img-'+index)
-    ele.classList.remove("fa-pause");
-    ele.classList.add("fa-play");
-  }
-
-
-  function toggleMute(){
-    var btnMute = document.querySelector('#toggleMute');
-    var volUp = document.querySelector('#icon-vol-up');
-    var volMute = document.querySelector('#icon-vol-mute');
-    if (this.currentAudio.muted == false) {
-       this.currentAudio.muted = true
-       volUp.style.display = "none"
-       volMute.style.display = "block"
-    }else{
-      this.currentAudio.muted = false
-      volMute.style.display = "none"
-      volUp.style.display = "block"
-    }
-  }
+};

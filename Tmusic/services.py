@@ -19,8 +19,7 @@ class MusicServices:
         return music
 
     def getAll(self, author):
-        musics = Music.objects.filter(author=author)
-        return musics
+        return Music.objects.filter(author=author)
 
     def delete(self, id):
         Music.objects.get(author=self.user, id=id).delete()

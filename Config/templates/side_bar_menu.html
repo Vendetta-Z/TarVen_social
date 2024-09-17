@@ -3,58 +3,36 @@
     <ul>
         <li><a href="/publication_feed">Publication feed </a></li>
         <li><a href="/show_saved_posts">Favorites</a></li>
-        <li><a href="/Music/getAll">Music</a></li>
+        <li><a href="/Music/index">Music</a></li>
         <li><a href="logout/">Logout</a> </li>
     </ul>
 
 
-    <audio id="myAudio" ontimeupdate="onTimeUpdate()">
-        <source id="source-audio" src="/Tmusic/musics/2/Funk_da_imortalidade__hrADcIx.mp3" type="audio/mp3">
-    </audio>
-
-        <div class="player-ctn">
-          <div class="infos-ctn">
-            <div class="timer">00:00</div>
-            <div class="title"></div>
-            <div class="duration">00:00</div>
-          </div>
-          <div id="myProgress">
-            <div id="myBar"></div>
-          </div>
-          <div class="btn-ctn">
-             <div class="btn-action fi  rst-btn" onclick="previous()">
-                <div id="btn-faws-back">
-                  <i class='fas fa-step-backward'></i>
-                </div>
-             </div>
-             <div class="btn-action" onclick="rewind()">
-                <div id="btn-faws-rewind">
-                  <i class='fas fa-backward'></i>
-                </div>
-             </div>
-             <div class="btn-action" onclick="toggleAudio()">
-                <div id="btn-faws-play-pause">
-                  <i class='fas fa-play' id="icon-play"></i>
-                  <i class='fas fa-pause' id="icon-pause" style="display: none"></i>
-                </div>
-             </div>
-             <div class="btn-play" onclick="forward()">
-                <div id="btn-faws-forward">
-                  <i class='fas fa-forward'></i>
-                </div>
-             </div>
-             <div class="btn-action" onclick="next()">
-                <div id="btn-faws-next">
-                  <i class='fas fa-step-forward'></i>
-                </div>
-             </div>
-             <div class="btn-mute" id="toggleMute" onclick="toggleMute()">
-                <div id="btn-faws-volume">
-                  <i id="icon-vol-up" class='fas fa-volume-up'></i>
-                  <i id="icon-vol-mute" class='fas fa-volume-mute' style="display: none"></i>
-                </div>
-             </div>
-          </div>
-          <div class="playlist-ctn"></div>
+    <div id="player">
+        <div class="track-info">
+            <span id="track-title">Track Title</span>
         </div>
+
+        <div class="controls">
+            <button id="prev-btn" title="Previous Track"><i class="fas fa-backward"></i></button>
+            <button id="play-btn" title="Play"><i class="fas fa-play"></i></button>
+            <button id="pause-btn" style="display: none;" title="Pause"><i class="fas fa-pause"></i></button>
+            <button id="next-btn" title="Next Track"><i class="fas fa-forward"></i></button>
+            <button id="repeat-btn" title="Repeat"><i class="fas fa-repeat"></i></button>
+            <button id="shuffle-btn" title="Shuffle"><i class="fas fa-random"></i></button>
+        </div>
+
+        <div class="progress-bar">
+            <span id="current-time">0:00</span>
+            <input type="range" id="progress" value="0" step="1">
+            <span id="duration">0:00</span>
+        </div>
+
+        <div id="volume-controls">
+            <button id="mute-btn" title="Mute"><i class="fas fa-volume-mute"></i></button>
+            <input type="range" id="volume-slider" min="0" max="1" step="0.01" value="1">
+        </div>
+    </div>
+
+    <audio id="audio-player" controls style="display:none;"></audio>
 </div>

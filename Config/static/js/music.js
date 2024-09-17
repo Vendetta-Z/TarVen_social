@@ -16,7 +16,7 @@ function getCookie(name) {
 
 function AddNewAudio(){
     audio = document.getElementById('AudioFileForAdd').files[0];
-    title = document.getElementById('TitleForNewAudio').val;
+    title = document.getElementById('TitleForNewAudio').value;
 
     var formdata = new FormData()
     formdata.append('Audio', audio);
@@ -30,22 +30,35 @@ function AddNewAudio(){
         headers: { "X-CSRFToken": getCookie("csrftoken") },
         data:formdata,
         success: function(data){
-        postData = JSON.parse(data['music']);
-        console.log(postData)
-            location.reload();
+            postData = JSON.parse(data['music']);
+            tracks.push({
+                title: postData[0].fields.title,
+                file: '/' + postData[0].fields.file,
+                id: postData[0].pk
+            });
+            playList.innerHTML += `
+                    <div style="background-color: gray; border: 1px solid #1c1c1c; border-radius: 3px;">
+                        <p style="display:inline-block;">${postData[0].fields.title}</p>
+                        <a>1:23</a>
+                        <button onclick=(playTrack(${tracks.length - 1})) id="play-btn" style="display: inline;">Play</button>
+                        <button onclick=(deleteMusic(${postData[0].pk}))>delete</button>
+                    </div>
+                `
         }
     })
 }
 
 function deleteMusic(id){
-
     $.ajax({
         url:'/Music/delete',
         method: "POST",
         headers: { "X-CSRFToken": getCookie("csrftoken") },
         data:{'musicId': id},
         success: function(data){
-            location.reload();
+            music_div = document.getElementById(`track_id${id}`)
+            music_div.remove();
         }
     })
 }
+
+

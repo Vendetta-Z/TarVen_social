@@ -1,7 +1,8 @@
+from django.core import serializers
 from django.http import JsonResponse
 from django.shortcuts import render
 
-from .models import Music
+import json
 from .services import MusicServices
 # Create your views here.
 class MusicViews:
@@ -26,6 +27,12 @@ class MusicViews:
         return JsonResponse('music', music)
 
     def getAll(self):
+        music = MusicServices.getAll(self, author=self.user)
+        music_Json = serializers.serialize('json', music)
+        return JsonResponse(music_Json, safe=False)
+
+
+    def index(self):
         music = MusicServices.getAll(self, author=self.user)
 
         return render(self, 'Music.html', {'music': music})

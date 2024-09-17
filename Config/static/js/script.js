@@ -9,6 +9,7 @@ window.onclick = function(event) {
     }
 }
 
+
 document.addEventListener('keydown', function (e) {
     var modal = document.getElementById('modal');
 
