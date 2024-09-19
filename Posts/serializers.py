@@ -6,4 +6,3 @@ class PostsSchema(Schema):
     description = fields.Str()
     image = fields.Str()
     created = fields.Str()
-

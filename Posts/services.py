@@ -21,14 +21,12 @@ class Posts_services:
         if Saved_post.objects.filter(user=self.user , post=post).exists():
             isSaved = 1
 
-
         like_icon = "Config/static/icons/heart.png"
         if Like.check_user_liked(self, user=self.user, post=post):
             like_icon = "Config/static/icons/red_heart.png"
 
         schema = CommentsSchema(many=True)
         json_post_comments = schema.dump(post_comments)
-
 
         self_user_follow_author = 0
         follow = UserFollowing.objects.filter(user_id=self.user, following_user=post.author.id)

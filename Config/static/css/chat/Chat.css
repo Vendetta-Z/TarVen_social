@@ -1,0 +1,21 @@
+.chat__item__container{
+    font-size: 20px;
+    background-color: gray;
+    width: 75%;
+    position: fixed;
+    bottom: 5px;
+    right: 30px;
+}
+
+.chat__item__container input{
+    width: 85%;
+    height: 48px;
+}
+
+#messagesBlock{
+    font-size: 20px;
+    position: absolute;
+    top: 78px;
+    left: 26%;
+    width: 69%;
+}

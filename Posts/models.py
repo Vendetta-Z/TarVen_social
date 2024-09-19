@@ -17,7 +17,6 @@ def getUploadFileUrl(instance, filename):
     return os.path.join(upload_dir, filename)
 
 
-
 class Posts(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     description = models.CharField(max_length=350)
@@ -32,7 +31,6 @@ class Posts(models.Model):
     preview = models.ImageField(upload_to=getUploadFileUrl)
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-
 
     @staticmethod
     def CheckTypeOfFile(filename):
@@ -52,7 +50,5 @@ class Saved_post(models.Model):
     post = models.OneToOneField(Posts, unique=True,on_delete=models.CASCADE)
     saved_time = models.DateTimeField(auto_now=True)
 
-
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-

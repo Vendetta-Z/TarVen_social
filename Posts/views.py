@@ -5,7 +5,6 @@ from .services import Posts_services
 
 class Posts_views:
 
-            
     def save_post_view(self):
         post_id = self.POST.get('saved_post_id')
         return Posts_services.savePostToFavorite(self, post_id)
@@ -23,11 +22,6 @@ class Posts_views:
         post_id = self.GET.get('post_id')
         post_data = Posts_services.getPostData(self, post_id=post_id)
 
-
-        return JsonResponse(
-            post_data,
-            safe=False
-        )
 
     def create_post(self):
         postFileInRequest= self.FILES['postFile']
