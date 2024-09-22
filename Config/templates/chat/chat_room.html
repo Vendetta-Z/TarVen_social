@@ -9,17 +9,19 @@
 <html>
 {% include "side_bar_menu.html" %}
     <body>
-        <center><h1>Чат с пользователем {{    chat.user_2}}</h1></center>
+        <center><h1>Чат с пользователем {{chat.user_2}}</h1></center>
         <div id="messagesBlock">
             {% for message in messages %}
                 
                 {% if message.sender != user %}
-                    <div class="MessageFromInterlocutor">
+                    <div class="MessageFromInterlocutor" id="messageId_{{message.id}}">
+                        <span class="menu-icon" onclick="toggleMenu('message1')">☰</span>
                         <p>{{message.text}}</p>
                         <p>{{message.Created}}</p>
                     </div>
                 {% else %}
-                    <div class="MessageFromUser">
+                    <div class="MessageFromUser" id="messageId_{{message.id}}">
+                        <span class="menu-icon" onclick="toggleMenu('{{message.id}}')">☰</span>
                         <p>{{message.text}}</p>
                         <p>{{message.Created}}</p>
                     </div>
@@ -37,6 +39,9 @@
             <br />
             <br />
         </div>
+
+
+        
 
 
         <script>

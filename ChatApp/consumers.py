@@ -50,7 +50,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
     async def sendMessage(self, event):
         message = event["message"]
         username = event["username"]
-        created = event["created"]  # Получаем время создания сообщения
+        created = event["created"] 
 
         # Отправляем сообщение и время его создания клиенту
         await self.send(
@@ -60,3 +60,15 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 "created": created
             })
         )
+
+    async def ReplyMessage(self, event):
+        message = event['message']
+        author = event['author']
+        created = ['created']
+        
+        await self.send(json.dumps({
+            "message": message,
+            "author": author,
+            "created": created
+        })
+    )

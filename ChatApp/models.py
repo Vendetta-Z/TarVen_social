@@ -26,3 +26,8 @@ class Message(models.Model):
 
     def __init__(self, *args: any, **kwargs: any) -> None:
         super().__init__(*args, **kwargs)
+
+class Reply(models.Model):
+    message = models.ForeignKey(Message, on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    created = models.DateTimeField(auto_now_add=True)

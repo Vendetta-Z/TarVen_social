@@ -43,3 +43,53 @@
     position: relative;
     left: 205px;
 }
+
+.messageSubMenu{
+    position: relative;
+    width: 147px;
+    height: 23px;
+    background-color: red;
+    padding: 5px;
+    z-index: 9;
+}
+
+/* awdawdawwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww */
+
+.message {
+    padding: 10px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.menu-icon {
+    cursor: pointer;
+    font-size: 16px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.submenu {
+    display: none;
+    position: relative;
+    width: 100px;
+    right: 10px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    padding: 10px;
+    z-index: 10;
+}
+
+.submenu.open {
+    display: block;
+}
+
+.submenu button {
+    display: block;
+    width: 100%;
+    padding: 5px;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
