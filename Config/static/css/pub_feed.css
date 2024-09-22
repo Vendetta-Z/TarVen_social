@@ -17,9 +17,34 @@ body {
     width: 76%;
     padding: 20px;
     margin-left: 22%;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr;
     grid-gap: 15px;
+}
+.UserDivInSearchBlock{
+    width: 100px;
+    background-color: gray;
+    height: 120px;
+    border-radius: 8px;
+    text-align: center;
+}
+.UserDivInSearchBlock img{
+    width:100px ;
+}
+
+.SearchBlock{
+    width: 82%;
+    right: 0;
+    border: 0px;
+    background-color: red;
+    height: 40px;
+    position: fixed;
+}
+
+#searchInput{
+    width: 90%;
+    height: 34px;
 }
 
 .post {

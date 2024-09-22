@@ -5,16 +5,19 @@ from django.contrib.auth import login
 from .models import User, UserFollowing
 from Posts.models import Posts
 
-class Users_services:   
+
+class Users_services:
 
     def CheckUserExistAndLogin(self, username, password):
 
-            user = User.objects.get(username=username, password=password)
-            if user:
-                login(self, user)
-                return redirect('/profile')
-            else:
-                return JsonResponse({'response': 404, 'message': 'Такой пользователь не найден'})
+        user = User.objects.get(username=username, password=password)
+        if user:
+            login(self, user)
+            return redirect("/profile")
+        else:
+            return JsonResponse(
+                {"response": 404, "message": "Такой пользователь не найден"}
+            )
 
     def getUserProfileData(self):
         userSubscribers = UserFollowing.objects.filter(following_user=self.user)
@@ -22,10 +25,10 @@ class Users_services:
         posts = Posts.objects.filter(author=self.user)
 
         return {
-            'user': self.user,
-            'subscribes': len(userSubscribes),
-            'subscribers': len(userSubscribers),
-            'posts': posts,
+            "user": self.user,
+            "subscribes": len(userSubscribes),
+            "subscribers": len(userSubscribers),
+            "posts": posts,
         }
 
     def changeUserData(self, requestFiles):
@@ -36,27 +39,29 @@ class Users_services:
         user.avatar = self.user.avatar
 
         if requestFiles:
-            user.avatar = self.FILES['avatar']
-            
+            user.avatar = self.FILES["avatar"]
+
         user.save()
 
-        return redirect('/')
+        return redirect("/")
 
     def getAnotherUserProfile(self, user):
         userSubscribers = UserFollowing.objects.filter(following_user=user)
         userSubscribes = UserFollowing.objects.filter(user_id=user.id)
 
         return {
-            'user': user,
-            'subscribes': len(userSubscribes),
-            'subscribers': len(userSubscribers),
-            'posts': Posts.objects.filter(author=user).order_by('-created')
+            "user": user,
+            "subscribes": len(userSubscribes),
+            "subscribers": len(userSubscribers),
+            "posts": Posts.objects.filter(author=user).order_by("-created"),
         }
-    
+
     def subscribeUser(self, user_id):
         subscribedToUser = User.objects.get(id=user_id)
-        if UserFollowing.objects.filter(user_id=self.user, following_user=subscribedToUser):
-            return JsonResponse('200', safe=False)
+        if UserFollowing.objects.filter(
+            user_id=self.user, following_user=subscribedToUser
+        ):
+            return JsonResponse("200", safe=False)
         else:
             newFollowingUser = UserFollowing(
                 user_id=self.user,
@@ -66,7 +71,7 @@ class Users_services:
 
     def unsubscribeUser(self, followingUserId):
         UserFollowing.unsubscribe(self, followingUserId)
-        return JsonResponse({'status_code':200})
+        return JsonResponse({"status_code": 200})
 
     # def getUserSubscribesData(self):
     #     UserFollowing.objects.filter(user_id=self.user)

@@ -8,13 +8,20 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Posts', '0002_rename_postvidorimg_posts_postfile_and_more'),
+        ("Posts", "0002_rename_postvidorimg_posts_postfile_and_more"),
     ]
 
     operations = [
         migrations.AlterField(
-            model_name='posts',
-            name='PostFile',
-            field=models.FileField(upload_to=Posts.models.getUploadFileUrl, validators=[django.core.validators.FileExtensionValidator(allowed_extensions=["['jpeg', 'jpg', 'png', 'mp3', 'mp4']"])]),
+            model_name="posts",
+            name="PostFile",
+            field=models.FileField(
+                upload_to=Posts.models.getUploadFileUrl,
+                validators=[
+                    django.core.validators.FileExtensionValidator(
+                        allowed_extensions=["['jpeg', 'jpg', 'png', 'mp3', 'mp4']"]
+                    )
+                ],
+            ),
         ),
     ]

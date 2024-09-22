@@ -2,14 +2,15 @@
 <html lang="en">
 <head>
     {% load static %}
+    {% load filters %}
+
     <title>User Profile</title>
     
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="{% static 'js/script.js'%}"></script>
-    <script src="{% static 'js/Profile.js'%}"></script>
-    
+
     <link href="{% static 'css/profile_page.css'%}" rel="stylesheet">     
     <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
 </head>
@@ -26,7 +27,7 @@
                     <img src="{% static 'image/LinearCoverGradientInProfilePicture.svg'%}" alt="Cover Photo">
                 </div>
                 <div class="profile-info">
-                    <img src="{{user.avatar}}" alt="Аватарка отсутствует" class="profile-avatar">
+                    <img src="/{{user.avatar}}" alt="Аватарка отсутствует" class="profile-avatar">
                     <h1 class="profile-name">{{user.username}}</h1>
                     <p class="profile-bio">This is a short user bio. It can be a few sentences long and give an overview of who the user is.</p>
                     <div class="profile-actions">
@@ -34,6 +35,7 @@
                         <button class="follow-btn">Subscribes {{subscribes}}</button>
                         <button class="follow-btn">Posts {{posts.count}}</button>
                         <button class="follow-btn">Follow</button>
+                        <a href="/Chat/Chat/{{user.id}}" class="follow-btn">Написать</a>
                     </div>
 
                 </div>
@@ -42,9 +44,15 @@
 
             <div class="tweets-section">
                 {% for post in posts %}
-                    <div class="tweet post{{post.pk}}" onclick="GetPostData({{post.pk}})">
+                    <div class="tweet post{{post.pk}}" onclick="OpenPostPopup({{post.pk}})">
                         <p>{{post.description}}</p>
-                        <img src="{{post.PostVidOrImg.url}}" alt="Tweet Image 1" class="tweet-image">
+                            {% if post.PostFile.url|typeOf  == 'mp4'%}
+                                <!-- Видеоплеер -->
+                                <img src="{{ post.preview.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                            {% else %}
+                                <!-- Изображение -->
+                                <img src="{{ post.PostFile.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 100%; height: auto;">
+                            {% endif %}
                         <a class="Post_hearth_icon" onclick="adding_like_for_post({{post.pk}})" ><img src=" {% static 'icons/heart.png'%}"/><a/>
                         <a class="Post_comment_icon" ><img src=" {% static 'icons/message-324.svg'%}"/><a/>
                         <span class="tweet-date">{{post.created}}</span>
@@ -99,10 +107,33 @@
         </div>
     </div>
 
-    <!-- Модальное окно публикации -->
-    <div id="modal" class="modal">
-        <div class="modal-content">
-        </div>    
+     <!-- Модальное окно публикации-->
+     <div id="modal" class="modal">
+        <div class="modal-content change-content">
+            <div class="tweet-header">
+                <div class="Tweet-avatar-div">
+                    <a id="Tweet-Avatar-link"><img  src="" alt="avatar in pub feed popup" class="Tweet-Avatar" id="Tweet-Avatar"></a>
+                </div>
+                <div class="Tweet-Author-div">
+                    <a class="tweet-author-name" href="${ author[0].pk }"></a>
+                    <button onclick="" class="tweet-follow-button"></button>
+                </div>
+            </div>
+            <div class="PostFilePlayBlock">
+                <img src="" alt="Tweet Image 1" class="tweet-image">
+                <video  class="plyr plyrVideoPlayerSource" playsinline controls>
+                    <source class="plyrVideoPlayerSource" type="video/mp4"/>
+                </video>
+            </div>
+
+            <a class="LikeIconCountTag"  ><img class="LikeIconPopup" src="" /></a>
+            <a class="tweet-comment-link" ><img class="tweet-comment-icon" src="/Config/static/icons/message-324.svg" /></a>
+            <a class="tweet-favorite-link" ><img class="tweet-favorite-icon" src="/Config/static/icons/save-instagram-black-lineal-18315.svg" /></a>
+
+            <p class="tweet-description"></p>
+            <span class="tweet-date"></span>
+            <button  class="modalChangePostBtn">edit post Publication</button>
+        </div>
     </div>
 </body>
 </html>

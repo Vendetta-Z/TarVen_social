@@ -24,7 +24,16 @@
 <body>
     <div class="container">
         {% include "side_bar_menu.html" %}
-        <div class="feed">
+        <div class="SearchBlock">
+            <input type="text" oninput="Search()" class="searchInput" id="searchInput"/>
+            <select class="OptionToSearchInput">
+                <option value="Publications">Публикации</option>
+                <option value="Users">Профиль</option>
+                <option value="All">Все</option>
+            </select>
+        </div>
+        
+        <div class="feed" id="feed">
             {% for post in publication_list %}
             <div class="post" onclick="OpenPostPopup({{post.pk}})">
                 {% if post.PostFile.url|typeOf  == 'mp4'%}

@@ -6,17 +6,17 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Posts', '0001_initial'),
+        ("Posts", "0001_initial"),
     ]
 
     operations = [
         migrations.RenameField(
-            model_name='posts',
-            old_name='PostVidOrImg',
-            new_name='PostFile',
+            model_name="posts",
+            old_name="PostVidOrImg",
+            new_name="PostFile",
         ),
         migrations.RemoveField(
-            model_name='posts',
-            name='preview',
+            model_name="posts",
+            name="preview",
         ),
     ]

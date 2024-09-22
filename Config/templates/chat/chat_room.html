@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+{% load static %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="{% static 'js/chat.js' %}"></script>
+
+<link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
+<link href="{% static 'css/chat/chat_room.css'%}" rel="stylesheet">
+
+<html>
+{% include "side_bar_menu.html" %}
+    <body>
+        <center><h1>Чат с пользователем {{    chat.user_2}}</h1></center>
+        <div id="messagesBlock">
+            {% for message in messages %}
+                
+                {% if message.sender != user %}
+                    <div class="MessageFromInterlocutor">
+                        <p>{{message.text}}</p>
+                        <p>{{message.Created}}</p>
+                    </div>
+                {% else %}
+                    <div class="MessageFromUser">
+                        <p>{{message.text}}</p>
+                        <p>{{message.Created}}</p>
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div
+                class="chat__item__container"
+                id="id_chat_item_container"
+                style="font-size: 20px"
+        >
+            <br />
+            <input type="text" id="id_message_send_input" />
+            <button type="submit" id="id_message_send_button">Send Message</button>
+            <br />
+            <br />
+        </div>
+
+
+        <script>
+            const chatID = {{chat.id}};
+            const chatSocket = new WebSocket("ws://" + window.location.host + '/ws/chat/' + chatID +  "/");
+            chatSocket.onopen = function (e) {
+                console.log("The connection was setup successfully !");
+
+            };
+            chatSocket.onclose = function (e) {
+                console.log("Something unexpected happened !");
+            };
+
+            document.querySelector("#id_message_send_input").focus();
+            document.querySelector("#id_message_send_input").onkeyup = function (e) {
+                if (e.keyCode == 13) {
+                    document.querySelector("#id_message_send_button").click();
+                }
+            };
+            document.querySelector("#id_message_send_button").onclick = function (e) {
+                var messageInput = document.querySelector("#id_message_send_input").value;
+
+                chatSocket.send(JSON.stringify({
+                    message: messageInput,
+                    userID : {{request.user.pk}},
+                    chatID: {{chat.id}}}));
+
+                document.querySelector("#id_message_send_input").value = "";
+            };
+
+            chatSocket.onmessage = function (e) {
+                const data = JSON.parse(e.data);
+                var messageInput = document.querySelector("#id_message_send_input").value;
+                var messageBlock = document.getElementById("messagesBlock");
+                var username = "{{request.user.username}}"
+                var messageElement = document.createElement("div");
+
+                if(data.username == username){
+                    messageElement.className = "MessageFromUser";
+                }
+                else{
+                    messageElement.className = "MessageFromInterlocutor";
+                }
+                messageElement.innerHTML = `<p>${data.message}</p>`;
+                messageElement.innerHTML += `<p>${data.created}</p>`;
+
+                messageBlock.append(messageElement);
+                messageBlock.scrollTop = messageBlock.scrollHeight;  // Прокрутка в самый низ
+                
+            };
+        </script>
+    </body>
+</html>

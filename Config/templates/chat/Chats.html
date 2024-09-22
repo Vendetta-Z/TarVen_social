@@ -1,54 +1,28 @@
 <!DOCTYPE html>
 {% load static %}
-    <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
-    <link href="{% static 'css/Chat.css'%}" rel="stylesheet">
+<link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
+<link href="{% static 'css/chat/Chat.css'%}" rel="stylesheet">
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="{% static 'js/chat.js' %}"></script>
+<script src="{% static 'js/script.js' %}"></script>
 
 <html>
 {% include "side_bar_menu.html" %}
-  <body>
-  <div id="messagesBlock">
+    <body>
+        <div class="chats-container">
 
-  </div>
-    <center><h1>Hello , Welcome to my chat site ! {{request.user}}</h1></center>
-    <br>
-    <div
-      class="chat__item__container"
-      id="id_chat_item_container"
-      style="font-size: 20px"
-    >
-      <br />
-      <input type="text" id="id_message_send_input" />
-      <button type="submit" id="id_message_send_button">Send Message</button>
-      <br />
-      <br />
-    </div>
-    <script>
-      const chatSocket = new WebSocket("ws://" + window.location.host + "/");
-      chatSocket.onopen = function (e) {
-        console.log("The connection was setup successfully !");
-      };
-      chatSocket.onclose = function (e) {
-        console.log("Something unexpected happened !");
-      };
-      document.querySelector("#id_message_send_input").focus();
-      document.querySelector("#id_message_send_input").onkeyup = function (e) {
-        if (e.keyCode == 13) {
-          document.querySelector("#id_message_send_button").click();
-        }
-      };
-      document.querySelector("#id_message_send_button").onclick = function (e) {
-        var messageInput = document.querySelector(
-          "#id_message_send_input"
-        ).value;
-        chatSocket.send(JSON.stringify({ message: messageInput, username : "{{request.user.username}}"}));
-      };
-      chatSocket.onmessage = function (e) {
-        const data = JSON.parse(e.data);
-        var div = document.createElement("div");
-        div.innerHTML = data.username + " : " + data.message;
-        document.querySelector("#id_message_send_input").value = "";
-        document.querySelector("#messagesBlock").appendChild(div);
-      };
-    </script>
-  </body>
+            {% for chat in Chats %}
+
+                <a href="/Chat/chat_room/{{chat.pk}}/" id="chatId_{{chat.pk}}" class="chat">
+                    {% if chat.user_1 != user %}
+                        <p>{{ chat.user_1.username }}</p>
+                    {% else %}
+                        <p>{{ chat.user_2.username }}</p>
+                    {% endif %}
+                    <a class="DeleteChat" onclick="RemoveChat({{chat.pk}})">Удалить</a>
+                </a>
+            {% endfor %}
+        </div>
+    </body>
 </html>

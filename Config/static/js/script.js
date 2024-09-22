@@ -1,3 +1,8 @@
+//Переменные для динамического поиска 
+const searchInput = document.getElementById('searchInput')
+const searchResult = document.getElementById('feed')
+
+
 // Закрытие модального окна при клике вне его
 window.onclick = function(event) {
     var modal = document.getElementById('modal');
@@ -20,7 +25,6 @@ document.addEventListener('keydown', function (e) {
     }
 })
 
-
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -35,6 +39,57 @@ function getCookie(name) {
         }
     }
     return cookieValue;
+}
+
+function Search(){
+    let inputText = $('.searchInput').val()
+    let OptionToSearchInput = $('.OptionToSearchInput').val();
+    if(inputText.length > 1){
+        $.ajax({
+            url:'/Posts/search',
+            data:{'search_param': inputText},
+            headers: { "X-CSRFToken": getCookie("csrftoken")},
+            method:'GET',
+            success:function(data){
+                let dataJson = data['result']
+                let searchRePostsData = JSON.parse(dataJson.Posts);
+                let searchReUsersData = JSON.parse(dataJson.Users);
+                console.log(searchReUsersData);
+                $('#feed').empty();
+
+                switch(OptionToSearchInput) {
+                    case 'Publications':
+                        for(var i = 0; i < searchRePostsData.length; i++){
+                            $('.feed').prepend(`
+                                <div class="post" onclick="OpenPostPopup(${searchRePostsData[i].pk})">
+                                    <img src="${searchRePostsData[i].fields.PostFile}" id="imagePlayer-1" alt="Post Image" style="max-width: 100%; height: auto;">
+                                </div>
+                            `)
+                        }
+                        break
+                    
+                    case 'Users':
+                        for(var i = 0; i < searchReUsersData.length; i++){
+                            $('.feed').prepend(`
+                                <div class="UserDivInSearchBlock">
+                                    <a href="/${searchReUsersData[i].pk}">
+                                        <img  src="${searchReUsersData[i].fields.avatar}">
+                                        <a >${searchReUsersData[i].fields.first_name}</a>
+                                    </a>
+                                </div>
+                            `)
+                        }
+                        
+                        break
+                    
+                    default:
+                        console.log('default')
+                        break
+                }
+            }
+        })
+        
+    }
 }
 
 function adding_like_for_post(post_id){
@@ -56,7 +111,7 @@ function adding_like_for_post(post_id){
         }
     })
 }
-
+//TODO исправить метод добавления лайка
 function adding_like_for_post(post_id){
     fetch('/my-ajax-url/')
       .then(response => response.json())  // Обработка ответа...
@@ -114,7 +169,7 @@ function add_comment(post_id){
 
 function OpenPostPopup(post_id){
     $.ajax({
-        url:'get_post',
+        url:'/Posts/get_post',
         headers: { "X-CSRFToken": getCookie("csrftoken")},
         data:{'post_id':post_id},
         method:'GET',
@@ -130,16 +185,13 @@ function OpenPostPopup(post_id){
 
             $('.modal').css('display', 'block');
 
-            $('.Tweet-Avatar').attr('src', author[0].fields.avatar);
-            $('.Tweet-Avatar-link').attr('href', author[0].pk);
+            $('.Tweet-Avatar').attr('src', `/${author[0].fields.avatar}`);
+            $('.Tweet-Avatar-link').attr('href', `/User/${author[0].pk}`);
 
-            $('.tweet-author-name').attr('href', author[0].pk);
+            $('.tweet-author-name').attr('href', `/User/${author[0].pk}`);
             $('.tweet-author-name').text(author[0].fields.username);
             $('.tweet-follow-button').attr('onclick', userFollowingBtn[0]);
             $('.tweet-follow-button').text(userFollowingBtn[1]);
-
-            const a = '{{posts}}'
-            console.log(a)
 
 
             var fileType = (postData[0].fields.PostFile).split('.').pop();
@@ -147,28 +199,27 @@ function OpenPostPopup(post_id){
                 $('.tweet-image').css('display', 'none');
                 $('.plyr').css('display', 'block');
                 $('.plyrVideoPlayerSource').attr('preload','auto')
-                $('.plyrVideoPlayerSource').html(`<source class="plyrVideoPlayerSource" src="${postData[0].fields.PostFile}"  type="video/mp4">`)
+                $('.plyrVideoPlayerSource').html(`<source class="plyrVideoPlayerSource" src="/${postData[0].fields.PostFile}"  type="video/mp4">`)
                 const players = Plyr.setup('.plyrVideoPlayerSource');
 
             }
             else{
                 $('.plyr').css('display', 'none');
                 $('.tweet-image').css('display', 'block');
-                $('.tweet-image').attr('src', postData[0].fields.PostFile);
+                $('.tweet-image').attr('src', `/${postData[0].fields.PostFile} `);
             }
 
-            $('.tweet-image').attr('src', postData[0].fields.PostFile)
             $('.LikeIconCountTag').attr('onclick', `adding_like_for_post(${post_id})`)
-            $('.LikeIconPopup').attr('src', data.like_icon)
+            $('.LikeIconPopup').attr('src', `/${data.like_icon}`)
 
             $('.tweet-comment-link').attr('onclick', `openCommentsPopup(${post_id})`)
 
             $('.tweet-favorite-link').attr('onclick', `save_post_to_favorite(${post_id})`)
             if(isSaved === 0){
-                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/save-instagram-black-lineal-18315.svg');
+                $('.tweet-favorite-icon').attr('src', '/Config/static/icons/save-instagram-black-lineal-18315.svg');
             }
             else{
-                $('.tweet-favorite-icon').attr('src', 'Config/static/icons/black-save-instagram-18316.svg');
+                $('.tweet-favorite-icon').attr('src', '/Config/static/icons/black-save-instagram-18316.svg');
             }
 
             $('.tweet-description').text(postData[0].fields.description)

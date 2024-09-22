@@ -55,7 +55,7 @@ function send_data_for_create_new_post(){
     formdata.append('postTitle', postTitle);
 
     $.ajax({
-        url:'create_new_post/',
+        url:'Posts/create_new_post/',
         method: "POST",
         processData: false,
         contentType: false,
@@ -125,7 +125,7 @@ function sendDataToChangeProfile(){
     formdata.append('status', status);
 
     $.ajax({
-        url:'change_user_data/',
+        url:'User/change_user_data',
         method: "POST",
         processData: false,
         contentType: false,

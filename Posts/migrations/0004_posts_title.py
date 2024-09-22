@@ -6,14 +6,16 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('Posts', '0003_alter_posts_postfile'),
+        ("Posts", "0003_alter_posts_postfile"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='posts',
-            name='title',
-            field=models.CharField(default='Config/static/image/default_avatar.png', max_length=350),
+            model_name="posts",
+            name="title",
+            field=models.CharField(
+                default="Config/static/image/default_avatar.png", max_length=350
+            ),
             preserve_default=False,
         ),
     ]

@@ -9,7 +9,7 @@ from typing import Any
 
 def getUploadFileUrl(instance, filename):
     fileType = Posts.CheckTypeOfFile(filename)
-    upload_dir = f'Config/static/PostData/{instance.author.id}/{fileType}/'
+    upload_dir = f"Config/static/PostData/{instance.author.id}/{fileType}/"
 
     if not os.path.isdir(upload_dir):
         os.makedirs(upload_dir)
@@ -23,31 +23,34 @@ class Posts(models.Model):
     created = models.DateTimeField(auto_now=True)
     title = models.CharField(max_length=350)
 
-    imageTypesForPost = ['jpeg','jpg', 'png']
-    videoTypesForPost = ['mp3', 'mp4']
+    imageTypesForPost = ["jpeg", "jpg", "png"]
+    videoTypesForPost = ["mp3", "mp4"]
     allTypesForPost = str(imageTypesForPost + videoTypesForPost)
-    PostFile = models.FileField(upload_to=getUploadFileUrl,
-                                validators=[FileExtensionValidator(allowed_extensions=[allTypesForPost])])
+    PostFile = models.FileField(
+        upload_to=getUploadFileUrl,
+        validators=[FileExtensionValidator(allowed_extensions=[allTypesForPost])],
+    )
     preview = models.ImageField(upload_to=getUploadFileUrl)
+
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
     @staticmethod
     def CheckTypeOfFile(filename):
         # Получаем расширение файла
-        extension = filename.split('.')[-1].lower()
+        extension = filename.split(".")[-1].lower()
         # Определяем тип файла по расширению
-        if extension in ['mp3', 'mp4']:
-            return 'video'
-        elif extension in ['jpeg', 'jpg', 'png']:
-            return 'image'
+        if extension in ["mp3", "mp4"]:
+            return "video"
+        elif extension in ["jpeg", "jpg", "png"]:
+            return "image"
         else:
-            return 'unknown'
+            return "unknown"
 
 
 class Saved_post(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    post = models.OneToOneField(Posts, unique=True,on_delete=models.CASCADE)
+    post = models.OneToOneField(Posts, unique=True, on_delete=models.CASCADE)
     saved_time = models.DateTimeField(auto_now=True)
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:

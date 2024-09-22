@@ -1,21 +1,29 @@
-.chat__item__container{
-    font-size: 20px;
-    background-color: gray;
-    width: 75%;
-    position: fixed;
-    bottom: 5px;
-    right: 30px;
+.chats-container{
+    position: relative;
+    left: 300px;
+    width: 50%;
+    height: auto;
+    top: 20px;
+    background-color: #4b4949;
+    padding: 5px;
 }
 
-.chat__item__container input{
-    width: 85%;
-    height: 48px;
+.chat{
+    background-color: white;
+    margin: 5px auto;
+    width: 80%;
+    height: 59px;
+    text-decoration: none;
+    color: white;
 }
 
-#messagesBlock{
-    font-size: 20px;
+.DeleteChat{
+    height: 45x;
+    display: block;
     position: absolute;
-    top: 78px;
-    left: 26%;
-    width: 69%;
+    background-color: red;
+    width: 59px;
+    top: 0;
+    right: 0;
+    cursor: pointer;
 }

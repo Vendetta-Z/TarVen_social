@@ -1,5 +1,6 @@
+from attr.filters import include
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls.static import static
 from django.conf import settings
 
@@ -7,40 +8,24 @@ from Posts.views import Posts_views
 from Users.views import User_views
 from Likes.views import LikeViews
 from Comments.views import CommentsViews
-from Tmusic.views import MusicViews
+from Tmusic.urls import MusicViews
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', User_views.profile),
-
-    path('login/', User_views.login_page, name="login_page"),
-    path('register/', User_views.register_page, name="register_page"),
-    path('logout/', User_views.logout, name="logout"),
-    path('<int:id>', User_views.get_user_profile),
-    path('change_user_data', User_views.change_user_data),
-    path('publication_feed', User_views.publication_feed),
-    path('subscribe', User_views.subscribe, name='subscibe_to'),
-    path('user_subscribes', User_views.getUserSubscribes, name='user_subscribes'),
-    path('unsubscribe', User_views.unsubscribe, name='unsubscribe'),
-
-    path('Comments/new_comment', CommentsViews.new_comment, name='add_comment'),
-    # path('Comments/get_comments', CommentsViews.getComments, name='get_comments'),
-
-    path('Music/create', MusicViews.create, name='create a music'),
-    path('Music/get', MusicViews.get, name='get music'),
-    path('Music/getAll', MusicViews.getAll, name='get all musics'),
-    path('Music/index', MusicViews.index, name='get all musics'),
-    path('Music/delete', MusicViews.delete, name='get all musics'),
-
-    path('get_post', Posts_views.get_post, name='get_post'),
-    path('Post/save_post', Posts_views.save_post_view, name='save_post'),
-    path('show_saved_posts', Posts_views.show_saved_views),
-    path('get_user_posts', Posts_views.get_user_posts, name='get_all_user_posts'),
-    path('change_post_data', Posts_views.change_post_data, name='change_post_data'),
-    path('create_new_post/', Posts_views.create_post, name='create_post'),
-    path('delete_post', Posts_views.delete_post, name='delete post'),
-
-    path('Like/add_like', LikeViews.add_like, name='Add like')
+    path("admin/", admin.site.urls),
+    path("", User_views.profile),
+    path("login/", User_views.login_page, name="login_page"),
+    path("register/", User_views.register_page, name="register_page"),
+    path("logout/", User_views.logout, name="logout"),
+    path("Music/", include("Tmusic.urls")),
+    path("Posts/", include("Posts.urls")),
+    path("User/", include("Users.urls")),
+    path("Chat/", include("ChatApp.urls")),
+    path("publication_feed", User_views.publication_feed),
+    path("subscribe", User_views.subscribe, name="subscibe_to"),
+    path("user_subscribes", User_views.getUserSubscribes, name="user_subscribes"),
+    path("unsubscribe", User_views.unsubscribe, name="unsubscribe"),
+    path("Comments/new_comment", CommentsViews.new_comment, name="add_comment"),
+    path("Like/add_like", LikeViews.add_like, name="Add like"),
 ]
 urlpatterns += static(settings.MMEDIA_URL, document_root=settings.MMEDIA_ROOT)
