@@ -12,27 +12,38 @@
         <center><h1>Чат с пользователем {{chat.user_2}}</h1></center>
         <div id="messagesBlock">
             {% for message in messages %}
-                
-                {% if message.sender != user %}
-                    <div class="MessageFromInterlocutor" id="messageId_{{message.id}}">
-                        <span class="menu-icon" onclick="toggleMenu('message1')">☰</span>
-                        <p>{{message.text}}</p>
-                        <p>{{message.Created}}</p>
-                    </div>
+                {% if message.sender %}
+                    {% if message.text == 'Сообщение удалено.' %}
+                        <div class="MessageFromUser" id="messageId_{{message.id}}">
+                            <p>{{message.text}}</p>
+                        </div>
+                    {% elif message.sender != user %}
+                        <div class="MessageFromInterlocutor" id="messageId_{{message.id}}">
+                            <span class="menu-icon" onclick="toggleMenu('{{message.id}}')">☰</span>
+                            <p>{{message.text}}</p>
+                            <p>{{message.created}}</p>
+                        </div>
+                    {% elif message.sender == user  %}
+                        <div class="MessageFromUser" id="messageId_{{message.id}}">
+                            <span class="menu-icon" onclick="toggleMenu('{{message.id}}')">☰</span>
+                            <p>{{message.text}}</p>
+                            <p>{{message.created}}</p>
+                        </div>
+                    {% endif %}
+
                 {% else %}
-                    <div class="MessageFromUser" id="messageId_{{message.id}}">
-                        <span class="menu-icon" onclick="toggleMenu('{{message.id}}')">☰</span>
-                        <p>{{message.text}}</p>
-                        <p>{{message.Created}}</p>
+                    <div class="Reply Reply_to_message_{{message.replyingTo.id}}" id=" messageId_{{message.id}}">
+                        <p class="replyToMessage"><strong>{{message.replyingTo.text}} </strong></p>
+                        <p> {{ message.text }}</p>
+                        <p>{{ message.created }}</p>
                     </div>
                 {% endif %}
             {% endfor %}
         </div>
-        <div
-                class="chat__item__container"
-                id="id_chat_item_container"
-                style="font-size: 20px"
-        >
+        <div class="chat__item__container" id="id_chat_item_container" style="font-size: 20px">
+            <div>
+                <a id="ReplyingMessageText" ></a>
+            </div>
             <br />
             <input type="text" id="id_message_send_input" />
             <button type="submit" id="id_message_send_button">Send Message</button>
@@ -40,8 +51,6 @@
             <br />
         </div>
 
-
-        
 
 
         <script>
@@ -62,15 +71,42 @@
                 }
             };
             document.querySelector("#id_message_send_button").onclick = function (e) {
-                var messageInput = document.querySelector("#id_message_send_input").value;
+                const messageInput = document.querySelector("#id_message_send_input").value;
+                
+                // Проверяем, если есть активный ответ на сообщение
+                if (isReplying) {
+                    chatSocket.send(JSON.stringify({
+                        type: 'ReplyMessage',  // Тип сообщения - ответ
+                        replyingTo: isReplying.messageId,  // ID сообщения, на которое идёт ответ
+                        messageText: messageInput,
+                        userID:{{ request.user.pk }}
+                    }));
+                    
+                    // Очищаем поле для ввода и сбрасываем состояние ответа
+                    document.querySelector("#id_message_send_input").value = "";
+                    document.getElementById("ReplyingMessageText").innerText = "";
+                    isReplying = null;
+                    return;
+                }
 
+                // Обычная отправка сообщения, если это не ответ
                 chatSocket.send(JSON.stringify({
                     message: messageInput,
-                    userID : {{request.user.pk}},
-                    chatID: {{chat.id}}}));
+                    userID: {{ request.user.pk }},
+                    chatID: {{ chat.id }}
+                }));
 
                 document.querySelector("#id_message_send_input").value = "";
             };
+
+            function DeleteMessageFromUser(messageId){
+                chatSocket.send(JSON.stringify({
+                    type: 'DeleteMessageFromUser',
+                    userId:{{request.user.pk}}, 
+                    messageId:messageId
+                })
+            )}
+
 
             chatSocket.onmessage = function (e) {
                 const data = JSON.parse(e.data);
@@ -78,19 +114,44 @@
                 var messageBlock = document.getElementById("messagesBlock");
                 var username = "{{request.user.username}}"
                 var messageElement = document.createElement("div");
+                var dataType = data.type
+                
+                if(data.IsReply){
+                    messageElement.className = "Reply";
+                    messageElement.id = `messageId_${data.replying_to_id} `;
+                    messageElement.id += `Reply_to_message_${data.replying_to_id} `;
 
-                if(data.username == username){
-                    messageElement.className = "MessageFromUser";
+                    messageElement.innerHTML += `<p class="replyToMessage"><strong>${data.replying_to}</strong></p>`;
+                    messageElement.innerHTML += `<p>${data.messageText}</p>`;
+                    messageElement.innerHTML += `<p>${data.created}</p>`;
+                }
+                else if(data.isDeleteFromAll){
+                    $(`#messageId_${data.messageId}`).remove();
+                    replies = $(`.Reply_to_message_${data.messageId}`);
+                    let i = 0;
+                    while(replies.length > i){
+                        replies[0].parentNode.removeChild(replies[0]);
+                        i += 1;
+                    }
+                    return
+                }
+                else if(data.IsHidden){
+                    message = document.getElementById(`messageId_${data.messageId}`)
+                    message.innerHTML = '<p>Сообщение удалено.</p>'
                 }
                 else{
                     messageElement.className = "MessageFromInterlocutor";
+                    messageElement.id = `messageId_${data.messageId}`
+                    if(data.username == username){
+                        messageElement.className = "MessageFromUser";
+                    } 
+                    messageElement.innerHTML = `<span class="menu-icon" onclick="toggleMenu('${data.messageId}')">☰</span>`;
+                    messageElement.innerHTML += `<p>${data.message}</p>`;
+                    messageElement.innerHTML += `<p>${data.created}</p>`;
                 }
-                messageElement.innerHTML = `<p>${data.message}</p>`;
-                messageElement.innerHTML += `<p>${data.created}</p>`;
 
                 messageBlock.append(messageElement);
                 messageBlock.scrollTop = messageBlock.scrollHeight;  // Прокрутка в самый низ
-                
             };
         </script>
     </body>

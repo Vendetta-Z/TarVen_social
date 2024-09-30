@@ -1,8 +1,11 @@
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 
+from itertools import chain
+from operator import attrgetter
+
 from Users.models import User
-from .models import Chat, Message
+from .models import Chat, Message, Reply, HiddenMessage
 
 
 class ChatViews:
@@ -16,8 +19,21 @@ class ChatViews:
     def chat_room(request, chat_id):
         chat = Chat.objects.get(id=chat_id)
         messages = Message.objects.filter(chat=chat)
+        replies = Reply.objects.filter(replyingTo__chat =chat)
+        hidden_messages = HiddenMessage.objects.filter(user=request.user).values_list('message_id', flat=True)
+
+        for message in messages:
+            if message.id in hidden_messages:
+                message.text = "Сообщение удалено."
+
+
+        combined_messages_and_replies = sorted(
+            chain(messages, replies),
+            key=attrgetter('created') if hasattr(Message, 'Created') else attrgetter('created')
+        )
+
         return render(
-            request, "chat/chat_room.html", {"chat": chat, "messages": messages}
+            request, "chat/chat_room.html", {"chat": chat, "messages": combined_messages_and_replies }
         )
 
     def Chats(self):

@@ -10,49 +10,82 @@ function RemoveChat(chatId){
     })
 }
 
-
 window.onload = function () {
     var messageBlock = document.getElementById("messagesBlock");
     messageBlock.scrollTop = messageBlock.scrollHeight;  // Прокрутка в самый низ
 };
 
 // Функция для открытия/закрытия меню
-let currentMenu = null;
-
+let currentMenuSubmenu = null;
+let isReplying = null;
 function toggleMenu(messageId) {
     const messageElement = document.getElementById(`messageId_${messageId}`);
 
-    if (currentMenu) {
-        currentMenu.remove();
-        currentMenu = null;
+    // Если текущее меню уже открыто, закрываем его
+    if (currentMenuSubmenu) {
+        currentMenuSubmenu.remove();
+        currentMenuSubmenu = null;
     }
 
+    // Создаем новое меню
     const submenu = document.createElement('div');
     submenu.classList.add('submenu', 'open');
-    
+
     submenu.innerHTML = `
-        <button onclick="replyToMessage('${messageId}')">Ответить</button>
-        <button onclick="deleteMessage('${messageId}')">Удалить</button>
+        <button onclick="replyToMessageMenu('${messageId}')">Ответить</button>
+        <button onclick="DeleteMessageSubMenu(${messageId})">Удалить</button>
     `;
-    
+
     messageElement.appendChild(submenu);
 
-    currentMenu = submenu;
+    // Сохраняем ссылку на текущее меню
+    currentMenuSubmenu = submenu;
 
+    // Закрытие меню при клике вне его
     document.addEventListener('click', function closeMenuOutside(event) {
         if (!submenu.contains(event.target) && !event.target.closest('.menu-icon')) {
             submenu.remove();
-            currentMenu = null;
+            currentMenuSubmenu = null;
             document.removeEventListener('click', closeMenuOutside);
         }
     });
 }
 
 
-function replyToMessage(chat){
+function replyToMessageMenu(messageId) {
+    // Получаем текст и автора сообщения
+    const replyingMessageText = document.querySelector(`#messageId_${messageId} p`).innerText;
 
+    // Показываем информацию об ответе в блоке ввода
+    document.getElementById("ReplyingMessageText").innerText = replyingMessageText;
+
+    // Сохраняем данные об ответе для дальнейшей отправки
+    isReplying = {
+        messageId: messageId,
+        messageText: replyingMessageText,
+    };
 }
 
-function deleteMessage(chat){
-    
+let currentMenuDelete = null;
+function DeleteMessageSubMenu(messageId) {
+    // Находим элемент сообщения
+    const messageElement = document.getElementById(`messageId_${messageId}`);
+    const DelSubmenu = document.createElement('div')
+    const submenu = $('.submenu');
+    submenu.remove()
+
+    DelSubmenu.innerHTML = `
+            <button onclick="DeleteMessageFromAll(${messageId})">Удалить для всех</button>
+            <button onclick="DeleteMessageFromUser(${messageId})">Удалить только для себя</button>
+        `;
+    messageElement.appendChild(DelSubmenu);
 }
+
+
+function DeleteMessageFromAll(messageId){
+    chatSocket.send(JSON.stringify({
+        type: 'DeleteMessageFromAll',
+        isDeleteFromAll: true,
+        messageId:messageId
+    })
+)}
