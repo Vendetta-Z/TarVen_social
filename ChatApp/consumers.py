@@ -3,7 +3,7 @@ from channels.db import database_sync_to_async
 
 import json
 
-from .models import Message, Chat, Reply, HiddenMessage
+from .models import Message, Chat, Reply, HiddenMessage,MediaFile
 from Users.models import User
 
 
@@ -39,15 +39,6 @@ def hide_message_for_user(userId, messageId):
     HiddenMessage.objects.create(user = user, message = message)
 
 
-#TODO доделать логику конвертирования ответов в обычные сообщения , в случае удаления сообщения на которые они ссылаются
-# @database_sync_to_async
-# def convert_all_replies_to_messages(chatId, message_id):
-    
-#     message = get_message_by_id(message_id)
-#     replies = Reply.objects.filter(replyingTo=message)
-#     for reply in replies:
-#         Message.objects.create(chat=chatId, sender=reply.author, text=reply.text, created=reply.created).save()
-
 class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
         self.roomGroupName = "group_chat_gfg"
@@ -67,6 +58,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                 await self.DeleteMessageFromAll(text_data_json)
             case 'DeleteMessageFromUser':
                 await self.DeleteMessageFromUser(text_data_json)
+            case 'Media_file':
+                await self.handle_media_file(text_data_json)
             case _:
                 await self.handle_message(text_data_json)
             
@@ -77,15 +70,28 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chatID = text_data_json["chatID"]
         user = await get_user(userID)
         message = await create_message(user=user, chatId=chatID, text=text)
-
-        await self.channel_layer.group_send(
-            self.roomGroupName,
-            {
+        DictionaryForGroupSend = {
                 "type": "sendMessage",
                 "message": text,
                 "messageId":message.id,
                 "username": user.username,
-                "created": message.created.strftime("%Y-%m-%d %H:%M:%S"),  # Форматируем время
+                "created": message.created.strftime("%Y-%m-%d %H:%M:%S"), # Форматируем время
+        } 
+        
+        await self.channel_layer.group_send(
+            self.roomGroupName,DictionaryForGroupSend
+        )
+
+    async def handle_media_file(self, event):
+        MediaFile = event["file"]
+        MediaText = event["text"]
+        await self.channel_layer.group_send(
+            self.roomGroupName,
+            {
+                "type": "sendMessage",
+                "file": MediaFile,
+                "text": MediaText,
+                "IsMediaFile": True
             },
         )
 
@@ -113,11 +119,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
     async def sendMessage(self, event):
         is_reply = event.get("IsReply", False)
+        is_Media = event.get("IsMediaFile", False)
+        if is_Media:
+            file = event["file"]
+            text = event["text"]
+            await self.send(
+                text_data=json.dumps({
+                    'file':file,
+                    'text': text,
+                    'IsMediaFile':True
+                })
+            )
+            return
+        
         username = event["username"]
         created = event["created"] 
-        if is_reply:
-            # Отправляем ответ на сообщение и время его создания клиенту
+        messageId = event['messageId']
+        message = event["message"]
+        dictionary_for_sendMessage = {
+                    "message": message,
+                    "messageId": messageId,
+                    "username": username,
+                    "created": created }
 
+        if is_reply:
+            # Отправляем ответ на сообщение
             replying_to = event["replying_to"]
             replying_to_id = event["replying_to_id"]
             messageText = event["messageText"]
@@ -131,17 +157,10 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "IsReply":True
                 })
             )
+       
         else:
-            # Отправляем сообщение и время его создания клиенту
-            messageId = event['messageId']
-            message = event["message"]
             await self.send(
-                text_data=json.dumps({
-                    "message": message,
-                    "messageId": messageId,
-                    "username": username,
-                    "created": created
-                })
+                text_data=json.dumps(dictionary_for_sendMessage)
             )
 
     async def DeleteMessageFromAll(self, event):
@@ -166,7 +185,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "IsHidden":True
                 })
             )
-
     # Обработчик для удаления сообщения из группового чата
     async def message_deleted(self, event):
         messageId = event["messageId"]

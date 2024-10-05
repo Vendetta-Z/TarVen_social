@@ -7,4 +7,5 @@ urlpatterns = [
     path("Chat/<int:user_id>", ChatViews.startChat, name="chat-page"),
     path("remove", ChatViews.Remove, name="chat-page"),
     path("chat_room/<int:chat_id>/", ChatViews.chat_room, name="chat_room"),
+    path('Upload_file/', ChatViews.Upload_file, name="upload file")
 ]

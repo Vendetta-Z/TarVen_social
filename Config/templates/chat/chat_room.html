@@ -1,10 +1,16 @@
 <!DOCTYPE html>
 {% load static %}
+{% load filters %}
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 <script src="{% static 'js/chat.js' %}"></script>
+<script src="{% static 'js/songPlayer.js'%}"></script>
+<script src="https://cdn.plyr.io/3.6.3/plyr.js"></script>
 
 <link href="{% static 'css/side_bar_menu.css'%}" rel="stylesheet">
 <link href="{% static 'css/chat/chat_room.css'%}" rel="stylesheet">
+
+<link rel="stylesheet" href="https://cdn.plyr.io/3.7.8/plyr.css" />
+<link href="{% static 'css/songPlayer.css'%}" rel="stylesheet">
 
 <html>
 {% include "side_bar_menu.html" %}
@@ -12,7 +18,8 @@
         <center><h1>Чат с пользователем {{chat.user_2}}</h1></center>
         <div id="messagesBlock">
             {% for message in messages %}
-                {% if message.sender %}
+                {% if message|get_class == 'Message' %}
+
                     {% if message.text == 'Сообщение удалено.' %}
                         <div class="MessageFromUser" id="messageId_{{message.id}}">
                             <p>{{message.text}}</p>
@@ -31,12 +38,37 @@
                         </div>
                     {% endif %}
 
-                {% else %}
+                {% elif message|get_class == 'Reply' %}
+
                     <div class="Reply Reply_to_message_{{message.replyingTo.id}}" id=" messageId_{{message.id}}">
                         <p class="replyToMessage"><strong>{{message.replyingTo.text}} </strong></p>
                         <p> {{ message.text }}</p>
                         <p>{{ message.created }}</p>
                     </div>
+
+                {% elif message|get_class == 'MediaFile' %}
+
+                    {% if message.author == user%}
+                        {% if message.file.url|typeOf == 'image' %}
+                            <div class="MessageFromUser">
+                                <img src="{{ message.file.url }}" id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 400px; height: auto;" />
+                                <p>{{message.text}}</p>
+                            </div>
+                        {% else %}
+                            <div class="MessageFromUser">
+                                <video  class="plyr plyrVideoPlayerSource" playsinline controls>
+                                    <source src="{{ message.file.url }}" class="plyrVideoPlayerSource" type="video/mp4"/>
+                                </video>
+                                <p>{{message.text}}</p>
+                            </div>
+                        {% endif %}
+                    {% else %}
+                        <div class="MessageFromInterlocutor">
+                            <img src="{{ message.file.url }}" controls fullscreen='{ enabled: true, fallback: true, iosNative: false }' id="imagePlayer-{{ forloop.counter }}" alt="Post Image" style="max-width: 400px; height: auto;">
+                            <p>{{message.text}}</p>
+                        </div>
+                    {% endif %}
+
                 {% endif %}
             {% endfor %}
         </div>
@@ -47,14 +79,32 @@
             <br />
             <input type="text" id="id_message_send_input" />
             <button type="submit" id="id_message_send_button">Send Message</button>
-            <br />
+            <input class="MediaFileInMessage" id="MediaFileInMessage" type="file"/>
+            <br/>
             <br />
         </div>
 
 
 
         <script>
-            const chatID = {{chat.id}};
+
+            function getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        // Does this cookie string begin with the name we want?
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+
+            const chatID = '{{chat.id}}';
             const chatSocket = new WebSocket("ws://" + window.location.host + '/ws/chat/' + chatID +  "/");
             chatSocket.onopen = function (e) {
                 console.log("The connection was setup successfully !");
@@ -72,6 +122,13 @@
             };
             document.querySelector("#id_message_send_button").onclick = function (e) {
                 const messageInput = document.querySelector("#id_message_send_input").value;
+                MediaFileInput = document.getElementById('MediaFileInMessage')
+                let mediaFileInMessage = $("#MediaFileInMessage");
+                let query = {
+                    message: messageInput,
+                    userID: '{{request.user.pk}}',
+                    chatID : '{{ chat.id }}'
+                } 
                 
                 // Проверяем, если есть активный ответ на сообщение
                 if (isReplying) {
@@ -79,22 +136,45 @@
                         type: 'ReplyMessage',  // Тип сообщения - ответ
                         replyingTo: isReplying.messageId,  // ID сообщения, на которое идёт ответ
                         messageText: messageInput,
-                        userID:{{ request.user.pk }}
-                    }));
-                    
+                        userID:'{{ request.user.pk }}'
+                        })
+                    )
                     // Очищаем поле для ввода и сбрасываем состояние ответа
                     document.querySelector("#id_message_send_input").value = "";
                     document.getElementById("ReplyingMessageText").innerText = "";
                     isReplying = null;
                     return;
                 }
-
-                // Обычная отправка сообщения, если это не ответ
-                chatSocket.send(JSON.stringify({
-                    message: messageInput,
-                    userID: {{ request.user.pk }},
-                    chatID: {{ chat.id }}
-                }));
+                
+                //Отправка медиа файла в случае если он присутствует в input'е
+                if(MediaFileInput.value){
+                    const file = MediaFileInput.files[0];
+                    const formData = new FormData();
+                    formData.append('file', file);
+                    formData.append('text', messageInput);
+                    $.ajax({
+                            url:'/Chat/Upload_file/',
+                            method: "POST",
+                            processData: false,
+                            contentType: false,
+                            headers: { "X-CSRFToken": getCookie("csrftoken") },
+                            data:formData,
+                            success: function(data){
+                                const responce =  JSON.parse(data);
+                                chatSocket.send(JSON.stringify({
+                                    type: 'Media_file',
+                                    file: responce[0].fields.file,
+                                    text: responce[0].fields.text
+                                    })
+                                )
+                            }
+                        })
+                }
+                else{
+                    chatSocket.send(JSON.stringify(query));
+                }
+                
+                
 
                 document.querySelector("#id_message_send_input").value = "";
             };
@@ -102,10 +182,10 @@
             function DeleteMessageFromUser(messageId){
                 chatSocket.send(JSON.stringify({
                     type: 'DeleteMessageFromUser',
-                    userId:{{request.user.pk}}, 
+                    userId:'{{request.user.pk}}', 
                     messageId:messageId
-                })
-            )}
+                    })
+                )}
 
 
             chatSocket.onmessage = function (e) {
@@ -115,7 +195,6 @@
                 var username = "{{request.user.username}}"
                 var messageElement = document.createElement("div");
                 var dataType = data.type
-                
                 if(data.IsReply){
                     messageElement.className = "Reply";
                     messageElement.id = `messageId_${data.replying_to_id} `;
@@ -139,15 +218,23 @@
                     message = document.getElementById(`messageId_${data.messageId}`)
                     message.innerHTML = '<p>Сообщение удалено.</p>'
                 }
+                else if(data.IsMediaFile){
+                    messageElement.className = "MediaFile";
+                    messageElement.innerHTML += `
+                    <div class="MessageFromUser">
+                        <img style="width:400px;" src="/${data.file}">
+                        <p>${data.text}</p>
+                    </div>
+                    `;    
+                }
                 else{
                     messageElement.className = "MessageFromInterlocutor";
                     messageElement.id = `messageId_${data.messageId}`
-                    if(data.username == username){
-                        messageElement.className = "MessageFromUser";
-                    } 
-                    messageElement.innerHTML = `<span class="menu-icon" onclick="toggleMenu('${data.messageId}')">☰</span>`;
-                    messageElement.innerHTML += `<p>${data.message}</p>`;
                     messageElement.innerHTML += `<p>${data.created}</p>`;
+                    messageElement.innerHTML = `<span class="menu-icon" onclick="toggleMenu('${data.messageId}')">☰</span>`;
+                    messageElement.innerHTML += `<p>${data.message}</p>`;    
+
+                    if(data.username == username){ messageElement.className = "MessageFromUser"; } 
                 }
 
                 messageBlock.append(messageElement);

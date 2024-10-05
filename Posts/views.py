@@ -28,7 +28,7 @@ class Posts_views:
 
     def create_post(self):
         postFileInRequest = self.FILES["postFile"]
-        postPreview = self.POST["postPreview"]
+        postPreview = self.FILES["postPreview"]
         postDescription = self.POST.get("postDescription")
         postTitle = self.POST.get("postDescription")
         Post = Posts_services.createNewPost(
